@@ -18,3 +18,7 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+use App\Http\Controllers\PublicMenuController;
+
+Route::get('/menu', [PublicMenuController::class, 'index'])->name('public.menu');
