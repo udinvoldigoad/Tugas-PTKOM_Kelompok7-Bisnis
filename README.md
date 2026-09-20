@@ -56,3 +56,13 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+# Catatan Relasi Database Kasir Kafe
+
+1. User (1) -> Transaksi (N): Satu Admin/Kasir dapat mencatat banyak transaksi.
+2. Transaksi (1) -> DetailTransaksi (N): Satu header transaksi memiliki banyak item detail pesanan.
+3. Menu (1) -> DetailTransaksi (N): Satu menu dapat muncul di banyak detail transaksi.
+
+## Aturan Transaksi & Menu:
+- Perubahan harga menu tidak boleh merusak riwayat transaksi lama (subtotal disimpan terpisah di detail_transaksis).
+- Penghapusan menu menggunakan mekanisme soft delete agar riwayat transaksi tetap valid.
