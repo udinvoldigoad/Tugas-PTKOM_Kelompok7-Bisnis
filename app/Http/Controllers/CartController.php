@@ -18,6 +18,12 @@ class CartController extends Controller
     public function add(Request $request, $id)
     {
         $menu = Menu::findOrFail($id);
+
+        // VALIDASI 19 SEP: Cek apakah menu habis
+        if ($menu->status_ketersediaan === 'habis') {
+            return redirect()->back()->with('error', 'Mohon maaf, menu ini sedang habis dan tidak dapat ditambahkan.');
+        }
+
         $cart = session()->get('cart', []);
 
         // Jika item sudah ada di keranjang, tambahkan jumlahnya
@@ -26,6 +32,7 @@ class CartController extends Controller
             $cart[$id]['subtotal'] = $cart[$id]['jumlah'] * $cart[$id]['harga'];
         } else {
             // Jika item belum ada, masukkan item baru
+            // VALIDASI 19 SEP: Harga diambil dari data server ($menu->harga)
             $cart[$id] = [
                 "id_menu" => $menu->id,
                 "nama_menu" => $menu->nama_menu,
@@ -42,16 +49,24 @@ class CartController extends Controller
     // Ubah jumlah/kuantitas item di keranjang
     public function update(Request $request, $id)
     {
+        // Validasi input angka utuh minimal 1
+        $request->validate([
+            'jumlah' => 'required|integer|min:1'
+        ], [
+            'jumlah.integer' => 'Jumlah harus berupa angka utuh.',
+            'jumlah.min' => 'Jumlah pesanan minimal 1.'
+        ]);
+
         $cart = session()->get('cart', []);
 
-        if (isset($cart[$id]) && $request->jumlah > 0) {
+        if (isset($cart[$id])) {
             $cart[$id]['jumlah'] = $request->jumlah;
             $cart[$id]['subtotal'] = $cart[$id]['jumlah'] * $cart[$id]['harga'];
             session()->put('cart', $cart);
             return redirect()->back()->with('success', 'Jumlah pesanan berhasil diperbarui!');
         }
 
-        return redirect()->back()->with('error', 'Item tidak ditemukan atau jumlah tidak valid.');
+        return redirect()->back()->with('error', 'Item tidak ditemukan.');
     }
 
     // Hapus item dari keranjang
