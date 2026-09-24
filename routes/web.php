@@ -30,7 +30,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/kasir/keranjang/update/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/kasir/keranjang/hapus/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
-    // Kelola Menu Kasir (Punya Niken)
     Route::get('/kelola-menu', function () {
         return view('menu.index');
     });
