@@ -135,15 +135,6 @@
                   <span id="subtotal-label">Sub Total (0 Item)</span>
                   <span id="subtotal-val">Rp 0</span>
                 </div>
-                <div class="flex justify-between items-center font-semibold">
-                  <span>PPN (10%)</span>
-                  <span id="ppn-val">Rp 0</span>
-                </div>
-                <div class="flex justify-between items-center font-semibold text-[#1A1208]/80">
-                  <span>Diskon Member</span>
-                  <span id="diskon-val">Rp 0</span>
-                </div>
-
                 <div class="border-t-2 border-dashed border-[#1A1208]/20 my-1"></div>
 
                 <div class="flex justify-between items-center text-sm font-extrabold tracking-tight">
@@ -397,17 +388,26 @@
     ];
 
     let cart = [];
+    let noteEditorItemId = null;
     let currentEditId = null;
     let selectedStatus = 'instock';
     let lastDeletedItem = null;
     let selectedPaymentMethod = 'cash';
-    let memberDiscount = 0;
     
     // VARIABEL FILTER KATEGORI TERPILIH
     let currentCategoryFilter = 'Semua';
 
     function formatRupiah(num) {
       return 'Rp ' + num.toLocaleString('id-ID');
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
     }
 
     // --- FUNGSI GANTI FILTER KATEGORI ---
@@ -700,7 +700,7 @@
       if (existing) {
         existing.qty += 1;
       } else {
-        cart.push({ ...product, qty: 1 });
+        cart.push({ ...product, qty: 1, note: '' });
       }
 
       renderCart();
@@ -714,6 +714,10 @@
 
       if (item.qty <= 0) {
         cart = cart.filter(i => i.id !== productId);
+
+        if (noteEditorItemId === productId) {
+          noteEditorItemId = null;
+        }
       }
 
       renderCart();
@@ -721,8 +725,47 @@
 
     function clearCart() {
       cart = [];
+      noteEditorItemId = null;
       hidePaymentSection();
       renderCart();
+    }
+
+    function openItemNote(productId) {
+      noteEditorItemId = productId;
+      renderCart();
+
+      requestAnimationFrame(() => {
+        const input = document.getElementById(`cart-note-${productId}`);
+        input?.focus();
+        input?.setSelectionRange(input.value.length, input.value.length);
+      });
+    }
+
+    function closeItemNote() {
+      noteEditorItemId = null;
+      renderCart();
+    }
+
+    function saveItemNote(productId) {
+      const item = cart.find(i => i.id === productId);
+      const input = document.getElementById(`cart-note-${productId}`);
+
+      if (!item || !input) return;
+
+      item.note = input.value.trim().slice(0, 100);
+      noteEditorItemId = null;
+      renderCart();
+    }
+
+    function handleItemNoteKeydown(event, productId) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        saveItemNote(productId);
+      }
+
+      if (event.key === 'Escape') {
+        closeItemNote();
+      }
     }
 
     function renderCart() {
@@ -750,15 +793,32 @@
         totalCount += item.qty;
 
         html += `
-          <div class="py-2 flex items-center justify-between gap-2">
-            <div>
+          <div class="py-2 flex items-start justify-between gap-2">
+            <div class="min-w-0 flex-1">
               <h4 class="font-bold text-sm text-[#1A1208] font-heading leading-tight">${item.name}</h4>
-              <button class="flex items-center gap-1 text-[11px] text-[#A08865] hover:underline mt-0.5 font-medium">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                </svg>
-                Tambahkan Catatan
-              </button>
+              ${noteEditorItemId === item.id ? `
+                <div class="mt-1.5 flex items-center gap-1.5">
+                  <input
+                    id="cart-note-${item.id}"
+                    type="text"
+                    maxlength="100"
+                    value="${escapeHtml(item.note || '')}"
+                    onkeydown="handleItemNoteKeydown(event, ${item.id})"
+                    placeholder="Contoh: tanpa gula"
+                    aria-label="Catatan untuk ${escapeHtml(item.name)}"
+                    class="min-w-0 flex-1 rounded-md border border-[#CDBA9F] bg-white px-2 py-1 text-[11px] text-[#1A1208] focus:border-[#A08865] focus:ring-1 focus:ring-[#A08865]"
+                  >
+                  <button onclick="saveItemNote(${item.id})" class="rounded-md bg-[#A08865] px-2 py-1 text-[10px] font-bold text-white hover:bg-[#8d7554]">Simpan</button>
+                  <button onclick="closeItemNote()" aria-label="Batal menulis catatan" class="rounded-md bg-[#E5E0DA] px-2 py-1 text-[10px] font-bold text-[#1A1208] hover:bg-[#D6CFC7]">Batal</button>
+                </div>
+              ` : `
+                <button onclick="openItemNote(${item.id})" class="mt-0.5 flex max-w-full items-center gap-1 text-left text-[11px] font-medium text-[#A08865] hover:underline">
+                  <svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                  </svg>
+                  <span class="truncate">${item.note ? escapeHtml(item.note) : 'Tambahkan Catatan'}</span>
+                </button>
+              `}
             </div>
 
             <div class="flex flex-col items-end gap-1 shrink-0">
@@ -774,8 +834,7 @@
         `;
       });
 
-      const ppn = Math.round(subtotal * 0.10);
-      const totalTagihan = Math.max(0, subtotal + ppn - memberDiscount);
+      const totalTagihan = subtotal;
 
       cartList.innerHTML = html;
       cartTotal.innerText = formatRupiah(totalTagihan);
@@ -783,8 +842,6 @@
       // Update Angka di Rincian Tagihan
       document.getElementById('subtotal-label').innerText = `Sub Total (${totalCount} Item)`;
       document.getElementById('subtotal-val').innerText = formatRupiah(subtotal);
-      document.getElementById('ppn-val').innerText = formatRupiah(ppn);
-      document.getElementById('diskon-val').innerText = formatRupiah(memberDiscount);
       document.getElementById('total-tagihan-val').innerText = formatRupiah(totalTagihan);
     }
 
