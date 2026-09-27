@@ -11,9 +11,9 @@
 
         <h2>Login</h2>
 
-        {{-- Username / Email --}}
+        {{-- Email --}}
         <div class="field-group">
-            <label class="field-label" for="email">Username</label>
+            <label class="field-label" for="email">Email</label>
             <div class="field-input-wrap">
                 <input
                     id="email"
@@ -21,7 +21,7 @@
                     type="email"
                     name="email"
                     value="{{ old('email') }}"
-                    placeholder="Masukkan Username"
+                    placeholder="Masukkan Email"
                     required
                     autofocus
                     autocomplete="username"
