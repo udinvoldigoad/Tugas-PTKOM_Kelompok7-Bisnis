@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class DetailTransaksi extends Model
 {
@@ -10,14 +11,14 @@ class DetailTransaksi extends Model
     protected $fillable = ['transaksi_id', 'menu_id', 'jumlah', 'subtotal'];
 
     // Relasi Belongs-To ke Transaksi
-    public function transaksi()
+    public function transaksi(): BelongsTo
     {
         return $this->belongsTo(Transaksi::class);
     }
 
     // Relasi Belongs-To ke Menu
-    public function menu()
+    public function menu(): BelongsTo
     {
-        return $this->belongsTo(Menu::class);
+        return $this->belongsTo(Menu::class)->withTrashed();
     }
 }
