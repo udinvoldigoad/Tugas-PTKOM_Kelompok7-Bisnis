@@ -14,7 +14,7 @@
     }
     body {
       font-family: var(--font-brand);
-      background-color: #dcd5d5;
+      background-color: #ffffff;
     }
     .font-heading {
       font-family: 'Space Mono', var(--font-brand), monospace;
@@ -22,10 +22,10 @@
   </style>
 </head>
 
-<body class="h-screen w-screen overflow-hidden p-3 md:p-4 flex items-center justify-center text-[#1A1208]">
+<body class="h-screen w-screen overflow-hidden bg-white text-[#1A1208]">
 
-  <!-- Container Utama -->
-  <div class="w-full h-full max-w-[1280px] bg-white rounded-[1rem] overflow-hidden shadow-2xl flex flex-col md:flex-row border border-gray-100 relative">
+  <!-- Container Utama Full Screen Edge-to-Edge -->
+  <div class="w-full h-full flex flex-col md:flex-row overflow-hidden relative">
 
     <!-- ================= SIDEBAR ================= -->
     <aside class="w-[84px] h-full bg-[#D8C29D] flex flex-col items-center justify-between py-5 shrink-0 relative">
@@ -80,18 +80,21 @@
       </a>
 
       <!-- LOGOUT -->
-      <button class="w-[48px] h-[48px] bg-[#FF6565] rounded-[14px] flex items-center justify-center shadow-sm hover:bg-red-600 transition text-white shrink-0">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M 9 21 H 5 A 2 2 0 0 1 3 19 V 5 A 2 2 0 0 1 5 3 H 9" />
-          <polyline points="16 17 21 12 16 7" />
-          <line x1="21" y1="12" x2="9" y2="12" />
-        </svg>
-      </button>
+      <form method="POST" action="{{ route('logout') }}" class="shrink-0">
+        @csrf
+        <button type="submit" title="Logout" class="w-[48px] h-[48px] bg-[#FF6565] rounded-[14px] flex items-center justify-center shadow-sm hover:bg-red-600 transition text-white">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M 9 21 H 5 A 2 2 0 0 1 3 19 V 5 A 2 2 0 0 1 5 3 H 9" />
+            <polyline points="16 17 21 12 16 7" />
+            <line x1="21" y1="12" x2="9" y2="12" />
+          </svg>
+        </button>
+      </form>
 
     </aside>
 
     <!-- ================= MAIN CONTENT ================= -->
-    <main class="flex-1 p-5 md:p-6 flex flex-col overflow-hidden h-full">
+    <main class="flex-1 p-5 md:p-6 flex flex-col overflow-hidden h-full bg-white">
       
       <!-- Header Atas -->
       <div class="flex items-center justify-between gap-4 mb-5 shrink-0">
@@ -101,9 +104,9 @@
         </div>
 
         <div class="flex items-center gap-3 bg-[#E6DDD0] px-4 py-1.5 rounded-full shrink-0">
-          <div class="w-8 h-8 rounded-full bg-[#8C7A6B] flex items-center justify-center text-white text-xs font-bold">I</div>
+          <div class="w-8 h-8 rounded-full bg-[#8C7A6B] flex items-center justify-center text-white text-xs font-bold">N</div>
           <div class="text-xs leading-tight">
-            <p class="font-bold text-[#1A1208]">Irfan</p>
+            <p class="font-bold text-[#1A1208]">Niken</p>
             <p class="text-[#1A1208]/70 font-medium">Kasir Shift 1</p>
           </div>
         </div>
@@ -115,11 +118,22 @@
         <!-- KOLOM KIRI: PRODUK & FILTER -->
         <div class="flex-1 flex flex-col min-h-0">
           
-          <!-- Tombol Filter -->
-          <div class="flex items-center gap-2 mb-4 shrink-0 justify-end">
-            <button class="px-5 py-2 rounded-xl bg-[#D8C29D] text-[#1A1208] font-bold text-xs shadow-sm">Semua</button>
-            <button class="px-5 py-2 rounded-xl bg-[#E8D8C3] hover:bg-[#D8C29D]/70 text-[#1A1208] font-bold text-xs transition">Makanan</button>
-            <button class="px-5 py-2 rounded-xl bg-[#E8D8C3] hover:bg-[#D8C29D]/70 text-[#1A1208] font-bold text-xs transition">Minuman</button>
+          <!-- Header Bar Tambah Menu & Filter -->
+          <div class="flex items-center justify-between mb-4 shrink-0 gap-2">
+            <!-- Tombol Tambah Menu -->
+            <button onclick="openAddModal()" class="px-4 py-2 rounded-xl bg-[#E06328] hover:bg-[#c9521c] text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+              </svg>
+              Tambah Menu
+            </button>
+
+            <!-- Tombol Filter Kategori (Semua, Makanan, Minuman) -->
+            <div class="flex items-center gap-2">
+              <button id="btn-filter-semua" onclick="setFilterCategory('Semua')" class="px-5 py-2 rounded-xl bg-[#D8C29D] text-[#1A1208] font-bold text-xs shadow-sm transition">Semua</button>
+              <button id="btn-filter-makanan" onclick="setFilterCategory('Makanan')" class="px-5 py-2 rounded-xl bg-[#E8D8C3] hover:bg-[#D8C29D]/70 text-[#1A1208] font-bold text-xs transition">Makanan</button>
+              <button id="btn-filter-minuman" onclick="setFilterCategory('Minuman')" class="px-5 py-2 rounded-xl bg-[#E8D8C3] hover:bg-[#D8C29D]/70 text-[#1A1208] font-bold text-xs transition">Minuman</button>
+            </div>
           </div>
 
           <!-- Grid Card Produk -->
@@ -132,8 +146,8 @@
           
           <!-- Input Cari -->
           <div class="relative w-full shrink-0">
-            <input type="text" placeholder="Cari..." class="w-full bg-[#D8C29D] text-[#1A1208] placeholder-[#1A1208]/60 pl-4 pr-10 py-2.5 rounded-xl text-xs font-medium focus:outline-none">
-            <button class="absolute right-0 top-0 bottom-0 w-10 bg-[#E06328] rounded-r-xl flex items-center justify-center text-white">
+            <input type="text" id="search-input" oninput="renderProducts()" placeholder="Cari..." class="w-full bg-[#D8C29D] text-[#1A1208] placeholder-[#1A1208]/60 pl-4 pr-10 py-2.5 rounded-xl text-xs font-medium focus:outline-none">
+            <button onclick="renderProducts()" class="absolute right-0 top-0 bottom-0 w-10 bg-[#E06328] hover:bg-[#c9521c] rounded-r-xl flex items-center justify-center text-white transition">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
               </svg>
@@ -164,14 +178,74 @@
             <div id="cart-list" class="flex-1 overflow-y-auto pr-1 flex flex-col my-2 divide-y divide-gray-100">
             </div>
 
-            <!-- Footer Total & Bayar -->
-            <div class="pt-3 border-t border-gray-200 shrink-0">
-              <button class="w-full bg-[#E06328] hover:bg-[#c9521c] text-white font-bold py-3 px-4 rounded-xl flex items-center justify-between transition shadow-md">
+            <!-- TAMPILAN AWAL: Footer Total & Tombol Keranjang -->
+            <div id="cart-footer-btn" class="pt-3 border-t border-gray-200 shrink-0">
+              <button onclick="showPaymentSection()" class="w-full bg-[#E06328] hover:bg-[#c9521c] text-white font-bold py-3 px-4 rounded-xl flex items-center justify-between transition shadow-md">
                 <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2zm-9.83-3.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49A1.003 1.003 0 0020 4H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.13 0-.25-.11-.25-.25z"/>
                 </svg>
                 <span id="cart-total" class="text-base tracking-wider font-heading font-extrabold">RP 0</span>
               </button>
+            </div>
+
+            <!-- TAMPILAN TAMBAHAN: Rincian Tagihan & Metode Pembayaran -->
+            <div id="payment-section" class="shrink-0 pt-2 flex-col gap-2 hidden">
+              
+              <!-- Kotak Rincian Tagihan -->
+              <div class="bg-[#E4CEB1] rounded-2xl p-3 flex flex-col gap-1 text-[#1A1208] text-xs font-heading">
+                <div class="flex justify-between items-center font-semibold">
+                  <span id="subtotal-label">Sub Total (0 Item)</span>
+                  <span id="subtotal-val">Rp 0</span>
+                </div>
+                <div class="flex justify-between items-center font-semibold">
+                  <span>PPN (10%)</span>
+                  <span id="ppn-val">Rp 0</span>
+                </div>
+                <div class="flex justify-between items-center font-semibold text-[#1A1208]/80">
+                  <span>Diskon Member</span>
+                  <span id="diskon-val">Rp 0</span>
+                </div>
+
+                <div class="border-t-2 border-dashed border-[#1A1208]/20 my-1"></div>
+
+                <div class="flex justify-between items-center text-sm font-extrabold tracking-tight">
+                  <span>Total Tagihan</span>
+                  <span id="total-tagihan-val">Rp. 0</span>
+                </div>
+              </div>
+
+              <!-- Kotak Metode Pembayaran & Cetak Struk -->
+              <div class="bg-[#A08865] rounded-2xl p-3 flex flex-col gap-3">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-1.5">
+                    <button onclick="hidePaymentSection()" title="Kembali" class="text-white hover:text-gray-200">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                    </button>
+                    <span class="text-white text-xs font-extrabold font-heading leading-tight">Metode<br>Pembayaran</span>
+                  </div>
+                  
+                  <div class="flex items-center gap-2">
+                    <button type="button" onclick="selectPayment('cash')" id="pay-cash" class="bg-white text-[#1A1208] rounded-xl px-3 py-1.5 flex flex-col items-center justify-center shadow-sm transition">
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M5 6h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2zm7 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3z"/>
+                      </svg>
+                      <span class="text-[10px] font-bold font-heading mt-0.5">Cash</span>
+                    </button>
+
+                    <button type="button" onclick="selectPayment('qris')" id="pay-qris" class="bg-[#D3C4B1] text-[#1A1208] rounded-xl px-3 py-1.5 flex flex-col items-center justify-center opacity-80 transition">
+                      <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zm-5 0h3v3h-3v-3zm0 5h3v3h-3v-3zm5 0h3v3h-3v-3z"/>
+                      </svg>
+                      <span class="text-[10px] font-bold font-heading mt-0.5">Qris</span>
+                    </button>
+                  </div>
+                </div>
+
+                <button onclick="processPayment()" class="w-full bg-[#E06328] hover:bg-[#c9521c] text-white font-extrabold font-heading py-2.5 rounded-xl text-sm transition shadow-md tracking-wider">
+                  Cetak Struk
+                </button>
+              </div>
+
             </div>
 
           </div>
@@ -183,21 +257,78 @@
 
   </div>
 
+  <!-- ================= MODAL TAMBAH MENU BARU ================= -->
+  <div id="addMenuModal" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50 flex items-center justify-center hidden p-3 md:p-4">
+    <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl p-4 md:p-5 relative overflow-y-auto max-h-[92vh]">
+      <button type="button" onclick="closeAddModal()" class="absolute top-3.5 right-3.5 text-[#1A1208]/50 hover:text-[#1A1208] hover:bg-gray-100 rounded-lg p-1.5 transition flex items-center justify-center">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+
+      <h2 class="text-lg md:text-xl font-extrabold font-heading text-[#1A1208] mb-4 pr-8">Tambah Menu Baru</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3.5">
+        <div>
+          <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Nama Produk</label>
+          <input type="text" id="add-name" placeholder="misal: Matcha Latte" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-2 rounded-lg text-xs focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Harga (Rp)</label>
+          <input type="number" id="add-price" placeholder="22000" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-2 rounded-lg text-xs focus:outline-none">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3.5">
+        <div>
+          <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Kategori Menu</label>
+          <div class="relative">
+            <select id="add-category" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-2 rounded-lg text-xs focus:outline-none appearance-none cursor-pointer pr-7">
+              <option value="Coffe">Coffe</option>
+              <option value="Non-Coffe">Non-Coffe</option>
+              <option value="Makanan">Makanan</option>
+            </select>
+            <div class="pointer-events-none absolute right-2.5 top-0 bottom-0 flex items-center text-[#1A1208]">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Kode SKU</label>
+          <input type="text" id="add-sku" placeholder="SKU-001" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-2 rounded-lg text-xs focus:outline-none">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+        <div>
+          <label class="block text-[11px] font-semibold text-[#1A1208] mb-1">Jumlah Stok Awal</label>
+          <input type="number" id="add-stock" value="30" class="w-full bg-[#D9D9D9] text-center font-extrabold font-heading text-sm text-[#1A1208] py-2 rounded-lg focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold text-[#1A1208] mb-1">Batas Peringatan Kritis (Min.Alert)</label>
+          <input type="number" id="add-min-alert" value="5" class="w-full bg-[#D9D9D9] text-center font-extrabold font-heading text-sm text-[#1A1208] py-2 rounded-lg focus:outline-none">
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-gray-100">
+        <button type="button" onclick="closeAddModal()" class="bg-gray-200 hover:bg-gray-300 text-[#1A1208] font-bold px-5 py-2 rounded-xl text-xs font-heading transition">Batal</button>
+        <button type="button" onclick="saveNewMenu()" class="bg-[#E06328] hover:bg-[#c9521c] text-white font-bold px-6 py-2 rounded-xl text-xs font-heading transition shadow-sm">Tambah Menu</button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ================= MODAL EDIT DETAIL MENU ================= -->
   <div id="editMenuModal" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50 flex items-center justify-center hidden p-3 md:p-4">
     <div class="bg-white w-full max-w-xl rounded-2xl shadow-2xl p-4 md:p-5 relative overflow-y-auto max-h-[92vh]">
-      
-      <!-- Tombol Close (X) -->
       <button type="button" onclick="closeEditModal()" class="absolute top-3.5 right-3.5 text-[#1A1208]/50 hover:text-[#1A1208] hover:bg-gray-100 rounded-lg p-1.5 transition flex items-center justify-center" title="Tutup">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
 
-      <!-- Judul Modal -->
       <h2 class="text-lg md:text-xl font-extrabold font-heading text-[#1A1208] mb-3 pr-8">Edit Detail Menu</h2>
 
-      <!-- Upload Foto Block -->
       <div class="bg-[#EBEBEB] rounded-xl p-3 flex items-center gap-3.5 mb-3.5">
         <div id="modal-photo-preview" class="w-12 h-12 rounded-full bg-[#755953] shrink-0 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
           Susu
@@ -210,7 +341,7 @@
               <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
               </svg>
-              Uploud foto
+              Upload foto
               <input type="file" class="hidden" accept="image/*">
             </label>
             <button type="button" class="bg-white hover:bg-gray-100 text-[#8B2626] border border-gray-200 px-2.5 py-1 rounded-md text-[11px] font-bold font-heading flex items-center gap-1 transition">
@@ -223,7 +354,6 @@
         </div>
       </div>
 
-      <!-- Form Inputs Row 1 -->
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 mb-3.5">
         <div>
           <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Nama produk</label>
@@ -248,7 +378,6 @@
         </div>
       </div>
 
-      <!-- Status Ketersediaan Stok -->
       <div class="mb-3.5">
         <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Status Ketersediaan Stok</label>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -258,7 +387,6 @@
         </div>
       </div>
 
-      <!-- Stok Counter & Critical Alert -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
         <div>
           <label class="block text-[11px] font-semibold text-[#1A1208] mb-1">Jumlah Stok Hari ini (porsi/Cup)</label>
@@ -275,7 +403,6 @@
         </div>
       </div>
 
-      <!-- Tombol Aksi bawah (Hapus & Simpan) -->
       <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-gray-100">
         <button type="button" onclick="deleteMenu()" class="bg-[#8B2626] hover:bg-red-800 text-white font-bold px-6 py-2 rounded-xl text-xs font-heading transition shadow-sm">Hapus</button>
         <button type="button" onclick="saveMenu()" class="bg-[#A88C52] hover:bg-[#937842] text-white font-bold px-6 py-2 rounded-xl text-xs font-heading transition shadow-sm">Simpan</button>
@@ -284,7 +411,7 @@
     </div>
   </div>
 
-  <!-- ================= MODAL NOTIFIKASI: BERHASIL DIHAPUS ================= -->
+  <!-- ================= MODAL NOTIFIKASI ================= -->
   <div id="deleteSuccessModal" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50 flex items-center justify-center hidden p-3">
     <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-5 relative">
       <button type="button" onclick="closeModal('deleteSuccessModal')" class="absolute top-3.5 right-3.5 w-7 h-7 bg-gray-200 hover:bg-gray-300 text-[#1A1208] rounded-full flex items-center justify-center transition">
@@ -320,45 +447,8 @@
     </div>
   </div>
 
-  <!-- ================= MODAL NOTIFIKASI: GAGAL TERSIMPAN / STOK HABIS ================= -->
-  <div id="saveFailedModal" class="fixed inset-0 bg-black/40 backdrop-blur-[2px] z-50 flex items-center justify-center hidden p-3">
-    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-5 relative">
-      <button type="button" onclick="closeModal('saveFailedModal')" class="absolute top-3.5 right-3.5 w-7 h-7 bg-gray-200 hover:bg-gray-300 text-[#1A1208] rounded-full flex items-center justify-center transition">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-        </svg>
-      </button>
-
-      <div class="flex items-center gap-3.5 mb-5 pr-6">
-        <div class="w-12 h-12 rounded-full bg-[#A88C52] shrink-0"></div>
-        <div>
-          <h3 class="font-extrabold font-heading text-[#1A1208] text-base md:text-lg">Tidak berhasil menambahkan Menu</h3>
-          <p class="text-xs text-[#1A1208]/90 mt-0.5">
-            Item <span id="failed-item-name" class="font-bold text-[#A88C52]">kopi Qinta (SKU-3314)</span> Stok sudah habis
-          </p>
-        </div>
-      </div>
-
-      <div class="flex items-center gap-2.5">
-        <button type="button" onclick="closeModal('saveFailedModal')" class="flex-1 bg-[#D9D9D9] hover:bg-gray-300 text-[#1A1208] font-bold py-2.5 px-3 rounded-full text-xs font-heading flex items-center justify-center gap-2 transition">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
-          </svg>
-          Kembali ke Menu
-        </button>
-        <button type="button" onclick="reopenEditModalFromFailed()" class="flex-1 bg-[#A88C52] hover:bg-[#937842] text-white font-bold py-2.5 px-3 rounded-full text-xs font-heading flex items-center justify-center gap-1.5 transition">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
-          </svg>
-          Isi Stok Kembali
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Script Logika Keranjang & Modal Edit & Modal Popup Notifikasi -->
+  <!-- SCRIPT LOGIKA -->
   <script>
-    // Data Daftar Produk Initial
     let products = [
       { id: 1, name: "Expresso", price: 18000, category: "Coffe", sku: "EXP-001", status: "instock", stock: 40, minAlert: 10 },
       { id: 2, name: "Americano", price: 20000, category: "Coffe", sku: "AME-002", status: "instock", stock: 35, minAlert: 10 },
@@ -371,40 +461,192 @@
     let cart = [];
     let currentEditId = null;
     let selectedStatus = 'instock';
-    let lastDeletedItem = null; // Menyimpan item yang baru dihapus untuk fungsi UNDO
+    let lastDeletedItem = null;
+    let selectedPaymentMethod = 'cash';
+    let memberDiscount = 0;
+    
+    // VARIABEL FILTER KATEGORI TERPILIH
+    let currentCategoryFilter = 'Semua';
 
     function formatRupiah(num) {
       return 'Rp ' + num.toLocaleString('id-ID');
     }
 
+    // --- FUNGSI GANTI FILTER KATEGORI ---
+    function setFilterCategory(category) {
+      currentCategoryFilter = category;
+
+      const btnSemua = document.getElementById('btn-filter-semua');
+      const btnMakanan = document.getElementById('btn-filter-makanan');
+      const btnMinuman = document.getElementById('btn-filter-minuman');
+
+      const activeClass = "px-5 py-2 rounded-xl bg-[#D8C29D] text-[#1A1208] font-bold text-xs shadow-sm transition";
+      const inactiveClass = "px-5 py-2 rounded-xl bg-[#E8D8C3] hover:bg-[#D8C29D]/70 text-[#1A1208] font-bold text-xs transition";
+
+      btnSemua.className = (category === 'Semua') ? activeClass : inactiveClass;
+      btnMakanan.className = (category === 'Makanan') ? activeClass : inactiveClass;
+      btnMinuman.className = (category === 'Minuman') ? activeClass : inactiveClass;
+
+      renderProducts();
+    }
+
+    // --- FUNGSI RENDER PRODUK DENGAN DUA FILTER (TEXT CARI + KATEGORI) ---
     function renderProducts() {
       const grid = document.getElementById('product-grid');
       grid.innerHTML = '';
 
-      products.forEach(item => {
+      const query = document.getElementById('search-input').value.trim().toLowerCase();
+
+      const filtered = products.filter(item => {
+        // Filter Kata Kunci (Pencarian)
+        const matchesSearch = item.name.toLowerCase().includes(query) || (item.sku && item.sku.toLowerCase().includes(query));
+
+        // Filter Kategori
+        let matchesCategory = false;
+        if (currentCategoryFilter === 'Semua') {
+          matchesCategory = true;
+        } else if (currentCategoryFilter === 'Makanan') {
+          matchesCategory = (item.category === 'Makanan');
+        } else if (currentCategoryFilter === 'Minuman') {
+          matchesCategory = (item.category === 'Coffe' || item.category === 'Non-Coffe' || item.category === 'Minuman');
+        }
+
+        return matchesSearch && matchesCategory;
+      });
+
+      const sortedProducts = [...filtered].sort((a, b) => {
+        if (a.status === 'archive' && b.status !== 'archive') return 1;
+        if (a.status !== 'archive' && b.status === 'archive') return -1;
+        return 0;
+      });
+
+      if (sortedProducts.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full flex flex-col items-center justify-center py-10 text-gray-400">
+            <p class="text-xs font-bold font-heading">Menu tidak ditemukan</p>
+          </div>
+        `;
+        return;
+      }
+
+      sortedProducts.forEach(item => {
+        const isArchive = item.status === 'archive';
+        const isOutOfStock = (item.stock <= 0 || item.status === 'out') && !isArchive;
+
+        let badgeHtml = '';
+        if (isArchive) {
+          badgeHtml = '<span class="absolute bg-gray-700 text-white text-[10px] font-bold px-2 py-0.5 rounded-full font-heading">Diarsipkan</span>';
+        } else if (isOutOfStock) {
+          badgeHtml = '<span class="absolute bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full font-heading">Habis</span>';
+        }
+
+        const isDisabled = isArchive || isOutOfStock;
+
         grid.innerHTML += `
-          <div class="bg-transparent flex flex-col">
+          <div class="bg-transparent flex flex-col ${isArchive ? 'opacity-40 grayscale' : isOutOfStock ? 'opacity-60' : ''}">
             <div class="relative w-full h-24 sm:h-28 bg-[#D0D0D0] rounded-xl mb-2 flex items-center justify-center">
-              <button onclick="openEditModal(${item.id})" class="absolute top-2 right-2 w-6 h-6 bg-[#C2C2C2] hover:bg-gray-400 rounded-full flex items-center justify-center text-[#1A1208] text-xs font-bold transition" title="Edit Detail Menu">⋮</button>
+              <button onclick="openEditModal(${item.id})" class="absolute top-2 right-2 w-6 h-6 bg-[#C2C2C2] hover:bg-gray-400 rounded-full flex items-center justify-center text-[#1A1208] text-xs font-bold transition z-10" title="Edit Detail Menu">⋮</button>
+              ${badgeHtml}
             </div>
             <div class="flex items-center justify-between">
               <div>
                 <h4 class="font-bold text-sm text-[#1A1208] font-heading leading-tight">${item.name}</h4>
                 <p class="text-xs font-bold text-[#1A1208]/90">${formatRupiah(item.price)}</p>
               </div>
-              <button onclick="addToCart(${item.id})" class="w-7 h-7 bg-[#E06328] hover:bg-[#c9521c] text-white rounded-lg flex items-center justify-center font-bold text-base transition shadow-sm">+</button>
+              <button onclick="addToCart(${item.id})" ${isDisabled ? 'disabled class="w-7 h-7 bg-gray-400 text-white rounded-lg flex items-center justify-center font-bold text-base cursor-not-allowed"' : 'class="w-7 h-7 bg-[#E06328] hover:bg-[#c9521c] text-white rounded-lg flex items-center justify-center font-bold text-base transition shadow-sm"'}>+</button>
             </div>
           </div>
         `;
       });
     }
 
-    // --- UTILITY MODAL CLOSER ---
+    // --- FUNGSI SHOW / HIDE PANEL PEMBAYARAN ---
+    function showPaymentSection() {
+      if (cart.length === 0) {
+        alert('Keranjang masih kosong! Silahkan pilih menu terlebih dahulu.');
+        return;
+      }
+      document.getElementById('cart-footer-btn').classList.add('hidden');
+      const paySec = document.getElementById('payment-section');
+      paySec.classList.remove('hidden');
+      paySec.classList.add('flex');
+    }
+
+    function hidePaymentSection() {
+      const paySec = document.getElementById('payment-section');
+      paySec.classList.add('hidden');
+      paySec.classList.remove('flex');
+      document.getElementById('cart-footer-btn').classList.remove('hidden');
+    }
+
+    function selectPayment(method) {
+      selectedPaymentMethod = method;
+      const btnCash = document.getElementById('pay-cash');
+      const btnQris = document.getElementById('pay-qris');
+
+      if (method === 'cash') {
+        btnCash.className = "bg-white text-[#1A1208] rounded-xl px-3 py-1.5 flex flex-col items-center justify-center shadow-sm transition";
+        btnQris.className = "bg-[#D3C4B1] text-[#1A1208] rounded-xl px-3 py-1.5 flex flex-col items-center justify-center opacity-80 transition";
+      } else {
+        btnQris.className = "bg-white text-[#1A1208] rounded-xl px-3 py-1.5 flex flex-col items-center justify-center shadow-sm transition";
+        btnCash.className = "bg-[#D3C4B1] text-[#1A1208] rounded-xl px-3 py-1.5 flex flex-col items-center justify-center opacity-80 transition";
+      }
+    }
+
+    function processPayment() {
+      if (cart.length === 0) return;
+      alert(`Pembayaran dengan ${selectedPaymentMethod.toUpperCase()} Berhasil! Mencetak Struk...`);
+      clearCart();
+    }
+
+    // --- MODAL & CART FUNCTIONS ---
+    function openAddModal() {
+      document.getElementById('add-name').value = '';
+      document.getElementById('add-price').value = '';
+      document.getElementById('add-sku').value = '';
+      document.getElementById('add-stock').value = 30;
+      document.getElementById('add-min-alert').value = 5;
+      document.getElementById('addMenuModal').classList.remove('hidden');
+    }
+
+    function closeAddModal() {
+      document.getElementById('addMenuModal').classList.add('hidden');
+    }
+
+    function saveNewMenu() {
+      const name = document.getElementById('add-name').value.trim();
+      const price = parseInt(document.getElementById('add-price').value) || 0;
+      const category = document.getElementById('add-category').value;
+      const sku = document.getElementById('add-sku').value.trim() || 'SKU-' + Math.floor(Math.random() * 9000 + 1000);
+      const stock = parseInt(document.getElementById('add-stock').value) || 0;
+      const minAlert = parseInt(document.getElementById('add-min-alert').value) || 5;
+
+      if (!name || price <= 0) {
+        alert('Mohon isi Nama Produk dan Harga dengan benar!');
+        return;
+      }
+
+      const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+
+      products.push({
+        id: newId,
+        name: name,
+        price: price,
+        category: category,
+        sku: sku,
+        status: 'instock',
+        stock: stock,
+        minAlert: minAlert
+      });
+
+      renderProducts();
+      closeAddModal();
+    }
+
     function closeModal(modalId) {
       document.getElementById(modalId).classList.add('hidden');
     }
 
-    // --- EDIT MODAL FUNCTIONS ---
     function openEditModal(productId) {
       const p = products.find(prod => prod.id === productId);
       if (!p) return;
@@ -452,7 +694,6 @@
       input.value = val;
     }
 
-    // --- FUNGSI SIMPAN DENGAN CEK STOK (NOTIFIKASI GAGAL TERSIMPAN) ---
     function saveMenu() {
       if (!currentEditId) return;
 
@@ -463,15 +704,18 @@
       const newName = document.getElementById('edit-name').value;
       const newSku = document.getElementById('edit-sku').value;
 
-      // JIKA STOK HABIS (0) ATAU STATUS 'HABIS SEMENTARA' -> TAMPILKAN MODAL GAGAL
-      if (newStock <= 0 || selectedStatus === 'out') {
+      if (selectedStatus === 'archive') {
+        products[idx].name = newName;
+        products[idx].category = document.getElementById('edit-category').value;
+        products[idx].sku = newSku;
+        products[idx].stock = newStock;
+        products[idx].status = 'archive';
+
+        renderProducts();
         closeEditModal();
-        document.getElementById('failed-item-name').innerText = `${newName} (${newSku})`;
-        document.getElementById('saveFailedModal').classList.remove('hidden');
         return;
       }
 
-      // JIKA BERHASIL (STOK > 0)
       products[idx].name = newName;
       products[idx].category = document.getElementById('edit-category').value;
       products[idx].sku = newSku;
@@ -483,29 +727,19 @@
       closeEditModal();
     }
 
-    function reopenEditModalFromFailed() {
-      closeModal('saveFailedModal');
-      if (currentEditId) {
-        document.getElementById('editMenuModal').classList.remove('hidden');
-      }
-    }
-
-    // --- FUNGSI HAPUS DENGAN POPUP NOTIFIKASI BERHASIL DIHAPUS & UNDO ---
     function deleteMenu() {
       if (!currentEditId) return;
 
       const p = products.find(item => item.id === currentEditId);
       if (!p) return;
 
-      lastDeletedItem = { ...p }; // Simpan data untuk dibatalkan jika diklik 'Batalkan'
+      lastDeletedItem = { ...p };
 
-      // Hapus dari array produk
       products = products.filter(item => item.id !== currentEditId);
       renderProducts();
 
       closeEditModal();
 
-      // Tampilkan Modal Notifikasi Dihapus
       document.getElementById('deleted-item-name').innerText = `${p.name} (${p.sku})`;
       document.getElementById('deleteSuccessModal').classList.remove('hidden');
     }
@@ -519,9 +753,10 @@
       closeModal('deleteSuccessModal');
     }
 
-    // --- CART FUNCTIONS ---
     function addToCart(productId) {
       const product = products.find(p => p.id === productId);
+      if (!product || product.stock <= 0 || product.status === 'archive') return;
+
       const existing = cart.find(i => i.id === productId);
 
       if (existing) {
@@ -548,6 +783,7 @@
 
     function clearCart() {
       cart = [];
+      hidePaymentSection();
       renderCart();
     }
 
@@ -562,15 +798,18 @@
           </div>
         `;
         cartTotal.innerText = 'RP 0';
+        hidePaymentSection();
         return;
       }
 
       let html = '';
-      let total = 0;
+      let subtotal = 0;
+      let totalCount = 0;
 
       cart.forEach(item => {
         const itemTotal = item.price * item.qty;
-        total += itemTotal;
+        subtotal += itemTotal;
+        totalCount += item.qty;
 
         html += `
           <div class="py-2 flex items-center justify-between gap-2">
@@ -597,11 +836,21 @@
         `;
       });
 
+      const ppn = Math.round(subtotal * 0.10);
+      const totalTagihan = Math.max(0, subtotal + ppn - memberDiscount);
+
       cartList.innerHTML = html;
-      cartTotal.innerText = 'RP ' + total.toLocaleString('id-ID');
+      cartTotal.innerText = formatRupiah(totalTagihan);
+
+      // Update Angka di Rincian Tagihan
+      document.getElementById('subtotal-label').innerText = `Sub Total (${totalCount} Item)`;
+      document.getElementById('subtotal-val').innerText = formatRupiah(subtotal);
+      document.getElementById('ppn-val').innerText = formatRupiah(ppn);
+      document.getElementById('diskon-val').innerText = formatRupiah(memberDiscount);
+      document.getElementById('total-tagihan-val').innerText = formatRupiah(totalTagihan);
     }
 
-    // Render Initial
+    // Render Awal
     renderProducts();
     renderCart();
   </script>
