@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+    <x-sidebar-state />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Menu Kasir - Coffe Ridho</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  @vite(['resources/css/app.css', 'resources/js/app.js'])
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -25,76 +26,13 @@
 <body class="h-screen w-screen overflow-hidden bg-white text-[#1A1208]">
 
   <!-- Container Utama Full Screen Edge-to-Edge -->
-  <div class="w-full h-full flex flex-col md:flex-row overflow-hidden relative">
+  <div class="profile-shell w-full h-full relative">
 
     <!-- ================= SIDEBAR ================= -->
-    <aside class="w-[84px] h-full bg-[#D8C29D] flex flex-col items-center justify-between py-5 shrink-0 relative">
-      
-      <!-- LOGO -->
-      <div class="w-[48px] h-[48px] flex items-center justify-center shrink-0">
-        <img src="{{ asset('depan/logo.png') }}" alt="Logo Coffe Ridho" class="w-full h-full object-contain">
-      </div>
-
-      <!-- GRID / MENU (ACTIVE) -->
-      <div class="relative group cursor-pointer shrink-0">
-        <div class="w-[48px] h-[48px] bg-white rounded-[14px] flex items-center justify-center shadow-sm">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="#D8C29D">
-            <rect x="3" y="3" width="8" height="8" rx="2" />
-            <rect x="13" y="3" width="8" height="8" rx="2" />
-            <rect x="3" y="13" width="8" height="8" rx="2" />
-            <rect x="13" y="13" width="8" height="8" rx="2" />
-          </svg>
-        </div>
-      </div>
-
-      <!-- KASIR -->
-      <button class="w-[48px] h-[48px] bg-white rounded-[14px] flex items-center justify-center shadow-sm hover:opacity-90 transition shrink-0">
-        <svg width="26" height="26" viewBox="0 0 32 32" fill="#D8C29D">
-          <rect x="11" y="6" width="10" height="6" rx="1" />
-          <path d="M7 14 C7 13, 8 12, 9 12 L23 12 C24 12, 25 13, 25 14 L26 21 L6 21 Z" />
-          <circle cx="10" cy="15" r="0.8" fill="white"/>
-          <circle cx="13" cy="15" r="0.8" fill="white"/>
-          <circle cx="16" cy="15" r="0.8" fill="white"/>
-          <circle cx="10" cy="18" r="0.8" fill="white"/>
-          <circle cx="13" cy="18" r="0.8" fill="white"/>
-          <circle cx="16" cy="18" r="0.8" fill="white"/>
-          <rect x="5" y="21" width="22" height="5" rx="1.5" />
-        </svg>
-      </button>
-
-      <!-- RIWAYAT -->
-      <button class="w-[48px] h-[48px] bg-white rounded-[14px] flex items-center justify-center shadow-sm hover:opacity-90 transition shrink-0">
-        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="#D8C29D" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M 8 16 A 8 8 0 1 1 12 23.5" />
-          <polyline points="5,11 8,16 13,13" fill="#D8C29D" stroke="none"/>
-          <polyline points="16,11 16,16 20,16" stroke-width="3"/>
-        </svg>
-      </button>
-
-      <!-- PROFIL (LINK KE DASHBOARD) -->
-      <a href="{{ route('dashboard') }}" class="w-[48px] h-[48px] bg-white rounded-[14px] flex items-center justify-center shadow-sm hover:opacity-90 transition shrink-0">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="#D8C29D">
-          <circle cx="12" cy="7.5" r="4" />
-          <path d="M4 19 C4 15.5, 7.5 14, 12 14 C16.5 14, 20 15.5, 20 19 Z" />
-        </svg>
-      </a>
-
-      <!-- LOGOUT -->
-      <form method="POST" action="{{ route('logout') }}" class="shrink-0">
-        @csrf
-        <button type="submit" title="Logout" class="w-[48px] h-[48px] bg-[#FF6565] rounded-[14px] flex items-center justify-center shadow-sm hover:bg-red-600 transition text-white">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M 9 21 H 5 A 2 2 0 0 1 3 19 V 5 A 2 2 0 0 1 5 3 H 9" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-        </button>
-      </form>
-
-    </aside>
+    <x-profile-sidebar active="kasir" />
 
     <!-- ================= MAIN CONTENT ================= -->
-    <main class="flex-1 p-5 md:p-6 flex flex-col overflow-hidden h-full bg-white">
+    <main class="min-w-0 flex-1 p-5 md:p-6 flex flex-col overflow-hidden h-full bg-white">
       
       <!-- Header Atas -->
       <div class="flex items-center justify-between gap-4 mb-5 shrink-0">
