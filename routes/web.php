@@ -11,7 +11,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard', ['user' => request()->user()]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware('auth')->name('dashboard');
 
 // Menu Publik
 Route::get('/menu', [PublicMenuController::class, 'index'])->name('public.menu');
