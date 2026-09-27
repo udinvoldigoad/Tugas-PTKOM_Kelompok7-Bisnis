@@ -135,6 +135,10 @@
                   <span id="subtotal-label">Sub Total (0 Item)</span>
                   <span id="subtotal-val">Rp 0</span>
                 </div>
+                <div class="flex justify-between items-center font-semibold">
+                  <span>PPN (10%)</span>
+                  <span id="ppn-val">Rp 0</span>
+                </div>
                 <div class="border-t-2 border-dashed border-[#1A1208]/20 my-1"></div>
 
                 <div class="flex justify-between items-center text-sm font-extrabold tracking-tight">
@@ -834,7 +838,8 @@
         `;
       });
 
-      const totalTagihan = subtotal;
+      const ppn = Math.round(subtotal * 0.10);
+      const totalTagihan = subtotal + ppn;
 
       cartList.innerHTML = html;
       cartTotal.innerText = formatRupiah(totalTagihan);
@@ -842,6 +847,7 @@
       // Update Angka di Rincian Tagihan
       document.getElementById('subtotal-label').innerText = `Sub Total (${totalCount} Item)`;
       document.getElementById('subtotal-val').innerText = formatRupiah(subtotal);
+      document.getElementById('ppn-val').innerText = formatRupiah(ppn);
       document.getElementById('total-tagihan-val').innerText = formatRupiah(totalTagihan);
     }
 
