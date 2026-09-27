@@ -1,62 +1,14 @@
 <x-app-layout :hideNavigation="true">
-    <div class="min-h-screen bg-[#EDEAE3] p-3 sm:p-5 lg:p-6 flex font-sans">
+    <div class="min-h-screen bg-[#FAF9F5] flex font-sans">
 
         <!-- Outer Application Window Frame -->
-        <div x-data="{}" class="flex-1 w-full bg-[#FAF9F5] rounded-3xl border border-[#2B2823]/15 shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+        <div x-data="{ sidebarExpanded: false }" class="profile-shell">
 
             <!-- ================= LEFT SIDEBAR ================= -->
-            <aside class="w-full lg:w-48 bg-[#D8B888] flex flex-row lg:flex-col items-center justify-between p-4 lg:py-6 lg:px-4 shrink-0 border-b lg:border-b-0 lg:border-r border-[#2B2823]/10">
-
-                <!-- Logo + Brand Name Top -->
-                <div class="flex items-center gap-3 mb-0 lg:mb-8">
-                    <a href="{{ route('dashboard') }}" class="group flex items-center gap-2.5" title="Kafe Ridho">
-                        <img src="{{ asset('depan/logo.png') }}" alt="Logo Kafe Ridho" class="w-10 h-10 object-contain transition transform group-hover:scale-105 shrink-0">
-                        <div class="hidden lg:flex flex-col leading-tight">
-                            <span class="font-mono font-bold text-sm text-[#1E1B18] tracking-widest uppercase">Coffe</span>
-                            <span class="font-mono font-bold text-sm text-[#1E1B18] tracking-widest uppercase">Ridho</span>
-                        </div>
-                    </a>
-                </div>
-
-                <!-- Navigation Menu Items -->
-                <nav class="flex flex-row lg:flex-col items-center lg:items-stretch lg:flex-1 justify-around lg:justify-evenly gap-3 lg:gap-0 w-full">
-
-                    <!-- 4. Profil -->
-                    <button
-                        type="button"
-
-                        class="relative w-12 lg:w-full h-12 lg:h-auto lg:px-4 lg:py-5 rounded-2xl flex items-center justify-center lg:justify-start gap-3 cursor-pointer transition-all duration-200"
-                        title="Profil">
-                        <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                        </svg>
-                        <span class="hidden lg:inline font-mono font-semibold text-sm">Profil</span>
-                        <span  class="hidden lg:flex absolute -right-4.5 top-1/2 -translate-y-1/2 bg-[#DE541E] text-white w-5 h-7 rounded-r-md items-center justify-center text-[11px] font-bold z-20">›</span>
-                    </button>
-                </nav>
-
-                <!-- Logout Bottom -->
-
-                <div class="mt-0 lg:mt-6 w-full">
-                    <form method="POST" action="{{ route('logout') }}" id="logout-form">
-                        @csrf
-                        <button
-                            type="submit"
-                            class="w-12 lg:w-full h-12 lg:h-auto lg:px-4 lg:py-3 bg-[#FF6565] hover:bg-[#E25353] rounded-2xl flex items-center justify-center lg:justify-start gap-3 shadow-sm text-white transition-all duration-200 cursor-pointer"
-                            title="Keluar / Logout">
-                            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                                <polyline points="16 17 21 12 16 7"/>
-                                <line x1="21" y1="12" x2="9" y2="12"/>
-                            </svg>
-                            <span class="hidden lg:inline font-mono font-semibold text-sm">Logout</span>
-                        </button>
-                    </form>
-                </div>
-            </aside>
+            <x-profile-sidebar />
 
             <!-- ================= MAIN CONTENT AREA ================= -->
-            <main class="flex-1 bg-[#FAF9F5] p-5 sm:p-8 lg:p-10 flex flex-col justify-between overflow-y-auto">
+            <main class="min-w-0 flex-1 bg-[#FAF9F5] p-5 sm:p-8 lg:p-10 flex flex-col justify-between overflow-y-auto">
                 <div>
                     <!-- ================= TOP HEADER ================= -->
                     <header class="flex items-center justify-between mb-6 pb-2">
