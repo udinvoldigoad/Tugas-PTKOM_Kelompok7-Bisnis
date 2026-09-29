@@ -154,13 +154,20 @@
                             <div class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
                                 @foreach ($section['menus'] as $menu)
                                     <article class="menu-card flex min-w-0 flex-col overflow-hidden rounded-2xl border-2 border-[#2c211d] bg-[#e1bd74] transition duration-200">
-                                        <div class="relative flex aspect-[4/3] items-center justify-center bg-[#f7f0e8] p-4">
-                                            <img src="{{ $photo($menu, $section['fallback']) }}" alt="{{ $menu->nama_menu }}" class="h-full w-full object-contain {{ $menu->status_ketersediaan === 'habis' ? 'grayscale opacity-50' : '' }}">
-                                            <span class="absolute bottom-3 right-3 rounded-xl px-3 py-1.5 font-bold text-white {{ $menu->status_ketersediaan === 'habis' ? 'bg-[#8b2626]' : 'bg-[#e96527]' }}">
+                                        <div class="relative flex aspect-[4/3] shrink-0 items-center justify-center overflow-hidden bg-[#f7f0e8] lg:aspect-[6/5]">
+                                            @if ($menu->foto)
+                                                <img src="{{ asset('storage/'.$menu->foto) }}" alt="{{ $menu->nama_menu }}" class="h-full w-full bg-[#f7f0e8] object-contain object-center {{ $menu->status_ketersediaan === 'habis' ? 'grayscale opacity-50' : '' }}">
+                                            @else
+                                                <div class="flex h-full w-full flex-col items-center justify-center bg-[radial-gradient(circle_at_center,#ead7af_0,#f7f0e8_68%)] px-4 text-center {{ $menu->status_ketersediaan === 'habis' ? 'grayscale opacity-50' : '' }}">
+                                                    <span class="display text-5xl font-bold text-[#b3935b] sm:text-6xl">{{ strtoupper(substr($menu->nama_menu, 0, 2)) }}</span>
+                                                    <span class="mt-2 text-[10px] font-bold uppercase tracking-[.16em] text-[#806b58]">Foto belum tersedia</span>
+                                                </div>
+                                            @endif
+                                            <span class="absolute bottom-3 right-3 z-10 rounded-xl px-3 py-1.5 font-bold text-white {{ $menu->status_ketersediaan === 'habis' ? 'bg-[#8b2626]' : 'bg-[#e96527]' }}">
                                                 {{ $menu->status_ketersediaan === 'habis' ? 'Habis' : 'Rp '.number_format($menu->harga, 0, ',', '.') }}
                                             </span>
                                         </div>
-                                        <div class="flex min-h-24 flex-col items-center justify-center p-3 text-center">
+                                        <div class="flex h-28 shrink-0 flex-col items-center justify-center overflow-hidden p-3 text-center">
                                             <h3 class="display line-clamp-2 text-xl font-semibold text-[#a93432] sm:text-2xl">{{ $menu->nama_menu }}</h3>
                                             <span class="mt-1 text-[10px] font-bold uppercase tracking-[.12em] text-[#725747] sm:text-xs">{{ $menu->kategori }}</span>
                                         </div>
