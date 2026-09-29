@@ -90,7 +90,7 @@
           </div>
 
           <!-- Grid Card Produk -->
-          <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 overflow-y-auto pr-1 pb-2">
+          <div id="product-grid" class="grid auto-rows-max grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 overflow-y-auto pr-1 pb-2">
           </div>
         </div>
 
@@ -558,18 +558,18 @@
         const isDisabled = isArchive || isOutOfStock;
 
         grid.innerHTML += `
-          <div class="bg-transparent flex flex-col ${isArchive ? 'opacity-40 grayscale' : isOutOfStock ? 'opacity-60' : ''}">
-            <div class="relative w-full h-24 sm:h-28 bg-[#D0D0D0] rounded-xl mb-2 flex items-center justify-center">
+          <div class="grid min-w-0 grid-rows-[auto_3.5rem] ${isArchive ? 'opacity-40 grayscale' : isOutOfStock ? 'opacity-60' : ''}">
+            <div class="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl bg-[#D0D0D0]">
               <button onclick="openEditModal(${item.id})" class="absolute top-2 right-2 w-6 h-6 bg-[#C2C2C2] hover:bg-gray-400 rounded-full flex items-center justify-center text-[#1A1208] text-xs font-bold transition z-10" title="Edit Detail Menu">⋮</button>
               ${badgeHtml}
-              ${item.photoUrl ? `<img src="${escapeHtml(item.photoUrl)}" alt="${escapeHtml(item.name)}" class="h-full w-full rounded-xl object-cover">` : `<span class="text-sm font-bold text-[#1A1208]/50">${escapeHtml(item.name.substring(0, 2).toUpperCase())}</span>`}
+              ${item.photoUrl ? `<img src="${escapeHtml(item.photoUrl)}" alt="${escapeHtml(item.name)}" class="h-full w-full rounded-xl object-cover object-top">` : `<span class="text-sm font-bold text-[#1A1208]/50">${escapeHtml(item.name.substring(0, 2).toUpperCase())}</span>`}
             </div>
-            <div class="flex items-center justify-between">
-              <div>
-                <h4 class="font-bold text-sm text-[#1A1208] font-heading leading-tight">${item.name}</h4>
+            <div class="flex min-w-0 items-center justify-between gap-2 pt-2">
+              <div class="min-w-0">
+                <h4 class="truncate font-bold text-sm text-[#1A1208] font-heading leading-tight" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</h4>
                 <p class="text-xs font-bold text-[#1A1208]/90">${formatRupiah(item.price)}</p>
               </div>
-              <button onclick="addToCart(${item.id})" ${isDisabled ? 'disabled class="w-7 h-7 bg-gray-400 text-white rounded-lg flex items-center justify-center font-bold text-base cursor-not-allowed"' : 'class="w-7 h-7 bg-[#E06328] hover:bg-[#c9521c] text-white rounded-lg flex items-center justify-center font-bold text-base transition shadow-sm"'}>+</button>
+              <button onclick="addToCart(${item.id})" ${isDisabled ? 'disabled class="w-7 h-7 shrink-0 bg-gray-400 text-white rounded-lg flex items-center justify-center font-bold text-base cursor-not-allowed"' : 'class="w-7 h-7 shrink-0 bg-[#E06328] hover:bg-[#c9521c] text-white rounded-lg flex items-center justify-center font-bold text-base transition shadow-sm"'}>+</button>
             </div>
           </div>
         `;
@@ -708,7 +708,7 @@
     function updatePhotoPreview(photoUrl, name) {
       const preview = document.getElementById('modal-photo-preview');
       preview.innerHTML = photoUrl
-        ? `<img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(name)}" class="h-full w-full object-cover">`
+        ? `<img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(name)}" class="h-full w-full bg-[#F4F0EA] object-contain p-2">`
         : escapeHtml(name.substring(0, 4));
     }
 
