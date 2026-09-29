@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicMenuController;
 use Illuminate\Support\Facades\Route;
@@ -30,9 +31,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/kasir/keranjang/update/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/kasir/keranjang/hapus/{id}', [CartController::class, 'remove'])->name('cart.remove');
 
-    Route::get('/kelola-menu', function () {
-        return view('menu.index');
-    });
+    Route::get('/kelola-menu', [MenuController::class, 'index'])->name('menu.index');
+    Route::post('/kelola-menu', [MenuController::class, 'store'])->name('menu.store');
+    Route::patch('/kelola-menu/{menu}', [MenuController::class, 'update'])->name('menu.update');
+    Route::delete('/kelola-menu/{menu}', [MenuController::class, 'destroy'])->name('menu.destroy');
+    Route::post('/kelola-menu/{menu}/restore', [MenuController::class, 'restore'])->name('menu.restore');
 });
 
 require __DIR__.'/auth.php';

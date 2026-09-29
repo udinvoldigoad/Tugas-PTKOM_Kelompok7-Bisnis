@@ -217,9 +217,10 @@
           <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Kategori Menu</label>
           <div class="relative">
             <select id="add-category" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-2 rounded-lg text-xs focus:outline-none appearance-none cursor-pointer pr-7">
-              <option value="Coffe">Coffe</option>
-              <option value="Non-Coffe">Non-Coffe</option>
+              <option value="Kopi">Kopi</option>
+              <option value="Non-Kopi">Non-Kopi</option>
               <option value="Makanan">Makanan</option>
+              <option value="Dessert">Dessert</option>
             </select>
             <div class="pointer-events-none absolute right-2.5 top-0 bottom-0 flex items-center text-[#1A1208]">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -227,20 +228,18 @@
           </div>
         </div>
         <div>
-          <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Kode SKU</label>
-          <input type="text" id="add-sku" placeholder="SKU-001" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-2 rounded-lg text-xs focus:outline-none">
+          <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Status Ketersediaan</label>
+          <select id="add-status" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-2 rounded-lg text-xs focus:outline-none cursor-pointer">
+            <option value="tersedia">Tersedia</option>
+            <option value="habis">Habis</option>
+          </select>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-        <div>
-          <label class="block text-[11px] font-semibold text-[#1A1208] mb-1">Jumlah Stok Awal</label>
-          <input type="number" id="add-stock" value="30" class="w-full bg-[#D9D9D9] text-center font-extrabold font-heading text-sm text-[#1A1208] py-2 rounded-lg focus:outline-none">
-        </div>
-        <div>
-          <label class="block text-[11px] font-semibold text-[#1A1208] mb-1">Batas Peringatan Kritis (Min.Alert)</label>
-          <input type="number" id="add-min-alert" value="5" class="w-full bg-[#D9D9D9] text-center font-extrabold font-heading text-sm text-[#1A1208] py-2 rounded-lg focus:outline-none">
-        </div>
+      <div class="mb-5">
+        <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Foto Menu</label>
+        <input type="file" id="add-photo" accept="image/jpeg,image/png,image/webp" class="block w-full rounded-lg bg-[#D9D9D9] px-3 py-2 text-xs file:mr-3 file:rounded-md file:border-0 file:bg-[#E2D4BB] file:px-3 file:py-1 file:font-bold">
+        <p class="mt-1 text-[10px] text-[#1A1208]/70">Format JPG, PNG, atau WebP. Maksimal 2 MB.</p>
       </div>
 
       <div class="flex items-center justify-end gap-2.5 pt-3 border-t border-gray-100">
@@ -275,9 +274,9 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
               </svg>
               Upload foto
-              <input type="file" class="hidden" accept="image/*">
+              <input type="file" id="edit-photo" class="hidden" accept="image/jpeg,image/png,image/webp" onchange="previewEditPhoto(this)">
             </label>
-            <button type="button" class="bg-white hover:bg-gray-100 text-[#8B2626] border border-gray-200 px-2.5 py-1 rounded-md text-[11px] font-bold font-heading flex items-center gap-1 transition">
+            <button type="button" onclick="removeEditPhoto()" class="bg-white hover:bg-gray-100 text-[#8B2626] border border-gray-200 px-2.5 py-1 rounded-md text-[11px] font-bold font-heading flex items-center gap-1 transition">
               <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
               </svg>
@@ -296,9 +295,10 @@
           <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Kategori Menu</label>
           <div class="relative">
             <select id="edit-category" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-1.5 rounded-lg text-xs focus:outline-none appearance-none cursor-pointer pr-7">
-              <option value="Coffe">Coffe</option>
-              <option value="Non-Coffe">Non-Coffe</option>
+              <option value="Kopi">Kopi</option>
+              <option value="Non-Kopi">Non-Kopi</option>
               <option value="Makanan">Makanan</option>
+              <option value="Dessert">Dessert</option>
             </select>
             <div class="pointer-events-none absolute right-2.5 top-0 bottom-0 flex items-center text-[#1A1208]">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -306,8 +306,8 @@
           </div>
         </div>
         <div>
-          <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">SKU</label>
-          <input type="text" id="edit-sku" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-1.5 rounded-lg text-xs focus:outline-none">
+          <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Harga (Rp)</label>
+          <input type="number" id="edit-price" min="1" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-1.5 rounded-lg text-xs focus:outline-none">
         </div>
       </div>
 
@@ -317,22 +317,6 @@
           <button type="button" onclick="setStatus('instock')" id="status-instock" class="bg-[#D9D9D9] text-[#1A1208] py-1.5 px-2 rounded-lg text-[11px] font-bold font-heading transition truncate">Tersedia (In Stock)</button>
           <button type="button" onclick="setStatus('out')" id="status-out" class="bg-[#D9D9D9] text-[#1A1208] py-1.5 px-2 rounded-lg text-[11px] font-bold font-heading transition truncate">Habis Sementara</button>
           <button type="button" onclick="setStatus('archive')" id="status-archive" class="bg-[#D9D9D9] text-[#1A1208] py-1.5 px-2 rounded-lg text-[11px] font-bold font-heading transition truncate">Arsipkan Menu</button>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-        <div>
-          <label class="block text-[11px] font-semibold text-[#1A1208] mb-1">Jumlah Stok Hari ini (porsi/Cup)</label>
-          <div class="flex items-center justify-between bg-[#D9D9D9] rounded-lg px-2 py-0.5">
-            <button type="button" onclick="updateModalStock(-1)" class="w-6 h-6 rounded-full bg-white text-[#1A1208] font-bold text-xs flex items-center justify-center shadow-xs hover:bg-gray-100">-</button>
-            <input type="number" id="edit-stock" value="40" class="w-full text-center bg-transparent font-extrabold font-heading text-sm text-[#1A1208] focus:outline-none py-1">
-            <button type="button" onclick="updateModalStock(1)" class="w-6 h-6 rounded-full bg-[#A08865] text-white font-bold text-xs flex items-center justify-center shadow-xs hover:bg-[#8d7554]">+</button>
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-[11px] font-semibold text-[#1A1208] mb-1">Batas peringatan Kritis (Min.Alert)</label>
-          <input type="number" id="edit-min-alert" value="10" class="w-full bg-[#D9D9D9] text-center font-extrabold font-heading text-sm text-[#1A1208] py-1 rounded-lg focus:outline-none">
         </div>
       </div>
 
@@ -358,7 +342,7 @@
         <div>
           <h3 class="font-extrabold font-heading text-[#1A1208] text-base md:text-lg">Menu Berhasil Dihapus</h3>
           <p class="text-xs text-[#1A1208]/90 mt-0.5">
-            Item <span id="deleted-item-name" class="font-bold text-[#A88C52]">kopi Qinta (SKU-3314)</span> berhasil dihapus
+            Item <span id="deleted-item-name" class="font-bold text-[#A88C52]">Menu</span> berhasil dihapus
           </p>
         </div>
       </div>
@@ -382,20 +366,17 @@
 
   <!-- SCRIPT LOGIKA -->
   <script>
-    let products = [
-      { id: 1, name: "Expresso", price: 18000, category: "Coffe", sku: "EXP-001", status: "instock", stock: 40, minAlert: 10 },
-      { id: 2, name: "Americano", price: 20000, category: "Coffe", sku: "AME-002", status: "instock", stock: 35, minAlert: 10 },
-      { id: 3, name: "Susu Ridho", price: 22000, category: "Coffe", sku: "SEN-001", status: "instock", stock: 40, minAlert: 10 },
-      { id: 4, name: "Cafe Latte", price: 23000, category: "Coffe", sku: "LAT-004", status: "instock", stock: 25, minAlert: 5 },
-      { id: 5, name: "kopi Qinta", price: 25000, category: "Coffe", sku: "SKU-3314", status: "instock", stock: 15, minAlert: 5 },
-      { id: 6, name: "Croissant", price: 15000, category: "Makanan", sku: "CRO-006", status: "instock", stock: 50, minAlert: 10 },
-    ];
+    const csrfToken = @json(csrf_token());
+    const menuBaseUrl = @json(url('/kelola-menu'));
+    const storageBaseUrl = @json(asset('storage'));
+    let products = @json($menus).map(menu => mapMenu(menu));
 
     let cart = [];
     let noteEditorItemId = null;
     let currentEditId = null;
     let selectedStatus = 'instock';
     let lastDeletedItem = null;
+    let removeCurrentPhoto = false;
     let selectedPaymentMethod = 'cash';
     
     // VARIABEL FILTER KATEGORI TERPILIH
@@ -412,6 +393,37 @@
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#039;');
+    }
+
+    function mapMenu(menu) {
+      return {
+        id: menu.id,
+        name: menu.nama_menu,
+        price: Number(menu.harga),
+        category: menu.kategori,
+        photo: menu.foto,
+        photoUrl: menu.foto ? `${storageBaseUrl}/${menu.foto}` : null,
+        status: menu.status_ketersediaan === 'tersedia' ? 'instock' : 'out',
+      };
+    }
+
+    async function sendMenuRequest(url, options) {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          'Accept': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          ...(options.headers || {}),
+        },
+      });
+      const payload = await response.json();
+
+      if (!response.ok) {
+        const messages = payload.errors ? Object.values(payload.errors).flat() : [payload.message || 'Terjadi kesalahan.'];
+        throw new Error(messages.join('\n'));
+      }
+
+      return payload;
     }
 
     // --- FUNGSI GANTI FILTER KATEGORI ---
@@ -441,7 +453,7 @@
 
       const filtered = products.filter(item => {
         // Filter Kata Kunci (Pencarian)
-        const matchesSearch = item.name.toLowerCase().includes(query) || (item.sku && item.sku.toLowerCase().includes(query));
+        const matchesSearch = item.name.toLowerCase().includes(query);
 
         // Filter Kategori
         let matchesCategory = false;
@@ -450,7 +462,7 @@
         } else if (currentCategoryFilter === 'Makanan') {
           matchesCategory = (item.category === 'Makanan');
         } else if (currentCategoryFilter === 'Minuman') {
-          matchesCategory = (item.category === 'Coffe' || item.category === 'Non-Coffe' || item.category === 'Minuman');
+          matchesCategory = (item.category === 'Kopi' || item.category === 'Non-Kopi' || item.category === 'Minuman');
         }
 
         return matchesSearch && matchesCategory;
@@ -473,7 +485,7 @@
 
       sortedProducts.forEach(item => {
         const isArchive = item.status === 'archive';
-        const isOutOfStock = (item.stock <= 0 || item.status === 'out') && !isArchive;
+        const isOutOfStock = item.status === 'out' && !isArchive;
 
         let badgeHtml = '';
         if (isArchive) {
@@ -489,6 +501,7 @@
             <div class="relative w-full h-24 sm:h-28 bg-[#D0D0D0] rounded-xl mb-2 flex items-center justify-center">
               <button onclick="openEditModal(${item.id})" class="absolute top-2 right-2 w-6 h-6 bg-[#C2C2C2] hover:bg-gray-400 rounded-full flex items-center justify-center text-[#1A1208] text-xs font-bold transition z-10" title="Edit Detail Menu">⋮</button>
               ${badgeHtml}
+              ${item.photoUrl ? `<img src="${escapeHtml(item.photoUrl)}" alt="${escapeHtml(item.name)}" class="h-full w-full rounded-xl object-cover">` : `<span class="text-sm font-bold text-[#1A1208]/50">${escapeHtml(item.name.substring(0, 2).toUpperCase())}</span>`}
             </div>
             <div class="flex items-center justify-between">
               <div>
@@ -545,9 +558,9 @@
     function openAddModal() {
       document.getElementById('add-name').value = '';
       document.getElementById('add-price').value = '';
-      document.getElementById('add-sku').value = '';
-      document.getElementById('add-stock').value = 30;
-      document.getElementById('add-min-alert').value = 5;
+      document.getElementById('add-category').value = 'Kopi';
+      document.getElementById('add-status').value = 'tersedia';
+      document.getElementById('add-photo').value = '';
       document.getElementById('addMenuModal').classList.remove('hidden');
     }
 
@@ -555,34 +568,33 @@
       document.getElementById('addMenuModal').classList.add('hidden');
     }
 
-    function saveNewMenu() {
+    async function saveNewMenu() {
       const name = document.getElementById('add-name').value.trim();
       const price = parseInt(document.getElementById('add-price').value) || 0;
       const category = document.getElementById('add-category').value;
-      const sku = document.getElementById('add-sku').value.trim() || 'SKU-' + Math.floor(Math.random() * 9000 + 1000);
-      const stock = parseInt(document.getElementById('add-stock').value) || 0;
-      const minAlert = parseInt(document.getElementById('add-min-alert').value) || 5;
 
       if (!name || price <= 0) {
         alert('Mohon isi Nama Produk dan Harga dengan benar!');
         return;
       }
 
-      const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+      const formData = new FormData();
+      formData.append('nama_menu', name);
+      formData.append('harga', price);
+      formData.append('kategori', category);
+      formData.append('status_ketersediaan', document.getElementById('add-status').value);
 
-      products.push({
-        id: newId,
-        name: name,
-        price: price,
-        category: category,
-        sku: sku,
-        status: 'instock',
-        stock: stock,
-        minAlert: minAlert
-      });
+      const photo = document.getElementById('add-photo').files[0];
+      if (photo) formData.append('foto', photo);
 
-      renderProducts();
-      closeAddModal();
+      try {
+        const payload = await sendMenuRequest(menuBaseUrl, { method: 'POST', body: formData });
+        products.push(mapMenu(payload.menu));
+        renderProducts();
+        closeAddModal();
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
     function closeModal(modalId) {
@@ -594,12 +606,12 @@
       if (!p) return;
 
       currentEditId = productId;
+      removeCurrentPhoto = false;
       document.getElementById('edit-name').value = p.name;
-      document.getElementById('edit-category').value = p.category || 'Coffe';
-      document.getElementById('edit-sku').value = p.sku || 'SKU-000';
-      document.getElementById('edit-stock').value = p.stock || 0;
-      document.getElementById('edit-min-alert').value = p.minAlert || 10;
-      document.getElementById('modal-photo-preview').innerText = p.name.substring(0, 4);
+      document.getElementById('edit-category').value = p.category || 'Kopi';
+      document.getElementById('edit-price').value = p.price;
+      document.getElementById('edit-photo').value = '';
+      updatePhotoPreview(p.photoUrl, p.name);
 
       setStatus(p.status || 'instock');
       document.getElementById('editMenuModal').classList.remove('hidden');
@@ -607,6 +619,27 @@
 
     function closeEditModal() {
       document.getElementById('editMenuModal').classList.add('hidden');
+    }
+
+    function updatePhotoPreview(photoUrl, name) {
+      const preview = document.getElementById('modal-photo-preview');
+      preview.innerHTML = photoUrl
+        ? `<img src="${escapeHtml(photoUrl)}" alt="${escapeHtml(name)}" class="h-full w-full object-cover">`
+        : escapeHtml(name.substring(0, 4));
+    }
+
+    function previewEditPhoto(input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      removeCurrentPhoto = false;
+      updatePhotoPreview(URL.createObjectURL(file), document.getElementById('edit-name').value);
+    }
+
+    function removeEditPhoto() {
+      removeCurrentPhoto = true;
+      document.getElementById('edit-photo').value = '';
+      updatePhotoPreview(null, document.getElementById('edit-name').value || 'Menu');
     }
 
     function setStatus(statusType) {
@@ -628,76 +661,72 @@
       }
     }
 
-    function updateModalStock(delta) {
-      const input = document.getElementById('edit-stock');
-      let val = parseInt(input.value) || 0;
-      val += delta;
-      if (val < 0) val = 0;
-      input.value = val;
-    }
-
-    function saveMenu() {
+    async function saveMenu() {
       if (!currentEditId) return;
 
-      const idx = products.findIndex(p => p.id === currentEditId);
-      if (idx === -1) return;
-
-      const newStock = parseInt(document.getElementById('edit-stock').value) || 0;
-      const newName = document.getElementById('edit-name').value;
-      const newSku = document.getElementById('edit-sku').value;
-
       if (selectedStatus === 'archive') {
-        products[idx].name = newName;
-        products[idx].category = document.getElementById('edit-category').value;
-        products[idx].sku = newSku;
-        products[idx].stock = newStock;
-        products[idx].status = 'archive';
-
-        renderProducts();
-        closeEditModal();
+        await deleteMenu();
         return;
       }
 
-      products[idx].name = newName;
-      products[idx].category = document.getElementById('edit-category').value;
-      products[idx].sku = newSku;
-      products[idx].stock = newStock;
-      products[idx].minAlert = parseInt(document.getElementById('edit-min-alert').value) || 0;
-      products[idx].status = selectedStatus;
+      const formData = new FormData();
+      formData.append('_method', 'PATCH');
+      formData.append('nama_menu', document.getElementById('edit-name').value.trim());
+      formData.append('kategori', document.getElementById('edit-category').value);
+      formData.append('harga', document.getElementById('edit-price').value);
+      formData.append('status_ketersediaan', selectedStatus === 'instock' ? 'tersedia' : 'habis');
+      if (removeCurrentPhoto) formData.append('hapus_foto', '1');
 
-      renderProducts();
-      closeEditModal();
+      const photo = document.getElementById('edit-photo').files[0];
+      if (photo) formData.append('foto', photo);
+
+      try {
+        const payload = await sendMenuRequest(`${menuBaseUrl}/${currentEditId}`, { method: 'POST', body: formData });
+        const index = products.findIndex(product => product.id === currentEditId);
+        products[index] = mapMenu(payload.menu);
+        renderProducts();
+        closeEditModal();
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
-    function deleteMenu() {
+    async function deleteMenu() {
       if (!currentEditId) return;
 
       const p = products.find(item => item.id === currentEditId);
       if (!p) return;
 
-      lastDeletedItem = { ...p };
-
-      products = products.filter(item => item.id !== currentEditId);
-      renderProducts();
-
-      closeEditModal();
-
-      document.getElementById('deleted-item-name').innerText = `${p.name} (${p.sku})`;
-      document.getElementById('deleteSuccessModal').classList.remove('hidden');
+      try {
+        await sendMenuRequest(`${menuBaseUrl}/${currentEditId}`, { method: 'DELETE' });
+        lastDeletedItem = { ...p };
+        products = products.filter(item => item.id !== currentEditId);
+        renderProducts();
+        closeEditModal();
+        document.getElementById('deleted-item-name').innerText = p.name;
+        document.getElementById('deleteSuccessModal').classList.remove('hidden');
+      } catch (error) {
+        alert(error.message);
+      }
     }
 
-    function undoDelete() {
-      if (lastDeletedItem) {
-        products.push(lastDeletedItem);
-        renderProducts();
+    async function undoDelete() {
+      if (!lastDeletedItem) return;
+
+      try {
+        const payload = await sendMenuRequest(`${menuBaseUrl}/${lastDeletedItem.id}/restore`, { method: 'POST' });
+        products.push(mapMenu(payload.menu));
         lastDeletedItem = null;
+        renderProducts();
+        closeModal('deleteSuccessModal');
+      } catch (error) {
+        alert(error.message);
       }
-      closeModal('deleteSuccessModal');
     }
 
     function addToCart(productId) {
       const product = products.find(p => p.id === productId);
-      if (!product || product.stock <= 0 || product.status === 'archive') return;
+      if (!product || product.status !== 'instock') return;
 
       const existing = cart.find(i => i.id === productId);
 
