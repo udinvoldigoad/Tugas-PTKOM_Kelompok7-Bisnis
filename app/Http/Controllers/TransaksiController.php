@@ -33,6 +33,9 @@ class TransaksiController extends Controller
      */
     public function store(Request $request): JsonResponse|RedirectResponse
     {
+        $validated = $request->validate([
+            'metode_pembayaran' => ['required', 'in:cash,qris'],
+        ]);
         $cart = $request->session()->get('cart', []);
 
         if ($cart === []) {
@@ -41,7 +44,7 @@ class TransaksiController extends Controller
             ]);
         }
 
-        $transaksi = DB::transaction(function () use ($cart, $request): Transaksi {
+        $transaksi = DB::transaction(function () use ($cart, $request, $validated): Transaksi {
             $menus = Menu::query()
                 ->whereKey(array_keys($cart))
                 ->lockForUpdate()
@@ -79,6 +82,7 @@ class TransaksiController extends Controller
                 'user_id' => $request->user()->id,
                 'tanggal' => now(),
                 'total_harga' => $subtotal + (int) round($subtotal * 0.1),
+                'metode_pembayaran' => $validated['metode_pembayaran'],
             ]);
             $transaction->detailTransaksi()->createMany($details);
 

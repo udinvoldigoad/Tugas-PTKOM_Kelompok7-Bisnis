@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaksi extends Model
 {
     // Mengizinkan kolom diisi secara massal
-    protected $fillable = ['user_id', 'tanggal', 'total_harga'];
+    protected $fillable = ['user_id', 'tanggal', 'total_harga', 'metode_pembayaran'];
 
     // Relasi One-to-Many ke DetailTransaksi
     public function detailTransaksi()

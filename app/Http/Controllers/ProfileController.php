@@ -29,6 +29,7 @@ class ProfileController extends Controller
     {
         $user = $request->user();
         $validated = $request->validated();
+        $previousAvatar = $user->avatar;
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
@@ -42,6 +43,10 @@ class ProfileController extends Controller
 
         $user->fill($validated);
         $user->save();
+
+        if (isset($validated['avatar']) && $previousAvatar && $previousAvatar !== $validated['avatar']) {
+            Storage::disk('public')->delete($previousAvatar);
+        }
 
         return redirect()->back(fallback: route('profile.edit'))->with('status', 'profile-updated');
     }

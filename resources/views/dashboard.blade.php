@@ -336,9 +336,9 @@
                                             <strong class="block text-xs font-mono text-[#1E1B18]">Shift {{ $user->shift ?? '1' }}</strong>
                                         </div>
                                         <div class="rounded-lg bg-[#F4F2ED] px-3 py-2.5">
-                                            <span class="block text-[10px] font-mono text-[#78756F] mb-1">Email</span>
-                                            <strong class="block text-xs font-mono {{ $user->email_verified_at ? 'text-[#287E36]' : 'text-[#9A5B21]' }}">
-                                                {{ $user->email_verified_at ? 'Terverifikasi' : 'Belum verifikasi' }}
+                                            <span class="block text-[10px] font-mono text-[#78756F] mb-1">Status Akun</span>
+                                            <strong class="block text-xs font-mono text-[#287E36]">
+                                                Aktif
                                             </strong>
                                         </div>
                                     </div>

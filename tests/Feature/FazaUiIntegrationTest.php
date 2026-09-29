@@ -47,6 +47,21 @@ class FazaUiIntegrationTest extends TestCase
         Storage::disk('public')->assertExists($user->avatar);
     }
 
+    public function test_replacing_avatar_removes_the_previous_file(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('avatars/previous.png', 'image');
+        $user = User::factory()->create(['avatar' => 'avatars/previous.png']);
+
+        $this->actingAs($user)->from('/dashboard')->patch('/profile', [
+            'email' => $user->email,
+            'avatar' => UploadedFile::fake()->image('replacement.png'),
+        ])->assertRedirect('/dashboard')->assertSessionHasNoErrors();
+
+        Storage::disk('public')->assertMissing('avatars/previous.png');
+        Storage::disk('public')->assertExists($user->refresh()->avatar);
+    }
+
     public function test_avatar_delete_only_removes_the_signed_in_users_photo(): void
     {
         Storage::fake('public');

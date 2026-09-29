@@ -29,7 +29,7 @@ class TransactionCheckoutTest extends TestCase
 
         $this->actingAs($user)
             ->withSession(['cart' => $cart])
-            ->postJson(route('transactions.store'))
+            ->postJson(route('transactions.store'), ['metode_pembayaran' => 'qris'])
             ->assertCreated()
             ->assertJsonPath('message', 'Transaksi berhasil disimpan.')
             ->assertSessionMissing('cart');
@@ -37,6 +37,7 @@ class TransactionCheckoutTest extends TestCase
         $this->assertDatabaseHas('transaksis', [
             'user_id' => $user->id,
             'total_harga' => 48400,
+            'metode_pembayaran' => 'qris',
         ]);
         $this->assertDatabaseHas('detail_transaksis', [
             'menu_id' => $menu->id,
@@ -60,7 +61,7 @@ class TransactionCheckoutTest extends TestCase
 
         $this->actingAs($user)
             ->withSession(['cart' => $cart])
-            ->postJson(route('transactions.store'))
+            ->postJson(route('transactions.store'), ['metode_pembayaran' => 'cash'])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('cart');
 
@@ -85,10 +86,10 @@ class TransactionCheckoutTest extends TestCase
 
         $this->actingAs($user)
             ->withSession(['cart' => $cart])
-            ->postJson(route('transactions.store'))
+            ->postJson(route('transactions.store'), ['metode_pembayaran' => 'cash'])
             ->assertCreated();
 
-        $this->postJson(route('transactions.store'))
+        $this->postJson(route('transactions.store'), ['metode_pembayaran' => 'cash'])
             ->assertUnprocessable()
             ->assertJsonValidationErrors('cart');
 
@@ -116,7 +117,7 @@ class TransactionCheckoutTest extends TestCase
         try {
             $this->actingAs($user)
                 ->withSession(['cart' => $cart])
-                ->postJson(route('transactions.store'))
+                ->postJson(route('transactions.store'), ['metode_pembayaran' => 'cash'])
                 ->assertServerError();
         } finally {
             DetailTransaksi::flushEventListeners();
@@ -125,6 +126,20 @@ class TransactionCheckoutTest extends TestCase
         $this->assertDatabaseCount('transaksis', 0);
         $this->assertDatabaseCount('detail_transaksis', 0);
         $this->assertEquals($cart, session('cart'));
+    }
+
+    public function test_transaction_requires_a_supported_payment_method(): void
+    {
+        $user = User::factory()->create();
+        $menu = $this->createMenu();
+
+        $this->actingAs($user)
+            ->withSession(['cart' => [$menu->id => ['jumlah' => 1]]])
+            ->postJson(route('transactions.store'), ['metode_pembayaran' => 'transfer'])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('metode_pembayaran');
+
+        $this->assertDatabaseCount('transaksis', 0);
     }
 
     /**
