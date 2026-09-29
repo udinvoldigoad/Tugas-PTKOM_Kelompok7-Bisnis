@@ -127,6 +127,7 @@
                                         {{ $index === 0 ? 'NEW' : 'PILIHAN' }}
                                     </span>
                                     <h1 class="display text-3xl font-semibold text-[#a93432] sm:text-4xl">{{ $menu->nama_menu }}</h1>
+                                    <span class="mt-2 w-fit rounded-full bg-[#dec799]/60 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[.12em] text-[#725747]">{{ $menu->kategori }}</span>
                                     <p class="mt-2 font-bold">Rp {{ number_format($menu->harga, 0, ',', '.') }}</p>
                                 </div>
                                 <div class="flex items-center justify-center bg-[#e9d4a7] p-4">
@@ -159,8 +160,9 @@
                                                 {{ $menu->status_ketersediaan === 'habis' ? 'Habis' : 'Rp '.number_format($menu->harga, 0, ',', '.') }}
                                             </span>
                                         </div>
-                                        <div class="flex min-h-20 items-center justify-center p-3 text-center">
+                                        <div class="flex min-h-24 flex-col items-center justify-center p-3 text-center">
                                             <h3 class="display line-clamp-2 text-xl font-semibold text-[#a93432] sm:text-2xl">{{ $menu->nama_menu }}</h3>
+                                            <span class="mt-1 text-[10px] font-bold uppercase tracking-[.12em] text-[#725747] sm:text-xs">{{ $menu->kategori }}</span>
                                         </div>
                                     </article>
                                 @endforeach
