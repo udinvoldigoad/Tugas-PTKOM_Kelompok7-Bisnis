@@ -20,10 +20,25 @@
     .font-heading {
       font-family: 'Space Mono', var(--font-brand), monospace;
     }
+    .app-toast {
+      animation: toast-in 220ms ease-out both;
+    }
+    .app-toast.is-leaving {
+      animation: toast-out 180ms ease-in forwards;
+    }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateY(-10px) scale(.97); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes toast-out {
+      to { opacity: 0; transform: translateY(-8px) scale(.98); }
+    }
   </style>
 </head>
 
 <body class="h-screen w-screen overflow-hidden bg-white text-[#1A1208]">
+
+  <div id="toast-region" class="pointer-events-none fixed inset-x-4 top-4 z-[100] flex flex-col items-end gap-2 sm:left-auto sm:w-[22rem]" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <!-- Container Utama Full Screen Edge-to-Edge -->
   <div class="profile-shell w-full h-full relative">
@@ -174,7 +189,7 @@
                   </div>
                 </div>
 
-                <button onclick="processPayment()" class="w-full bg-[#E06328] hover:bg-[#c9521c] text-white font-extrabold font-heading py-2.5 rounded-xl text-sm transition shadow-md tracking-wider">
+                <button id="process-transaction-button" onclick="processPayment()" class="w-full bg-[#E06328] hover:bg-[#c9521c] disabled:cursor-wait disabled:opacity-60 text-white font-extrabold font-heading py-2.5 rounded-xl text-sm transition shadow-md tracking-wider">
                   Cetak Struk
                 </button>
               </div>
@@ -368,10 +383,17 @@
   <script>
     const csrfToken = @json(csrf_token());
     const menuBaseUrl = @json(url('/kelola-menu'));
+    const cartBaseUrl = @json(url('/kasir/keranjang'));
+    const transactionStoreUrl = @json(route('transactions.store'));
     const storageBaseUrl = @json(asset('storage'));
     let products = @json($menus).map(menu => mapMenu(menu));
-
-    let cart = [];
+    let cart = Object.values(@json($cart)).map(item => ({
+      id: Number(item.id_menu),
+      name: item.nama_menu,
+      price: Number(item.harga),
+      qty: Number(item.jumlah),
+      note: '',
+    }));
     let noteEditorItemId = null;
     let currentEditId = null;
     let selectedStatus = 'instock';
@@ -393,6 +415,25 @@
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#039;');
+    }
+
+    function showToast(message, type = 'error') {
+      const toastRegion = document.getElementById('toast-region');
+      const toast = document.createElement('div');
+      const isSuccess = type === 'success';
+      toast.className = `app-toast pointer-events-auto flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-sm font-bold shadow-lg ${isSuccess ? 'border-green-200 bg-green-50 text-green-800' : 'border-red-200 bg-red-50 text-red-800'}`;
+      toast.innerHTML = `
+        <span class="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full ${isSuccess ? 'bg-green-600' : 'bg-red-600'} text-xs text-white">${isSuccess ? '✓' : '!'}</span>
+        <span class="min-w-0 flex-1">${escapeHtml(message)}</span>
+        <button type="button" class="text-lg leading-none opacity-60 hover:opacity-100" aria-label="Tutup pesan">×</button>
+      `;
+      const removeToast = () => {
+        toast.classList.add('is-leaving');
+        window.setTimeout(() => toast.remove(), 180);
+      };
+      toast.querySelector('button').addEventListener('click', removeToast);
+      toastRegion.appendChild(toast);
+      window.setTimeout(removeToast, isSuccess ? 3500 : 5000);
     }
 
     function mapMenu(menu) {
@@ -420,6 +461,26 @@
 
       if (!response.ok) {
         const messages = payload.errors ? Object.values(payload.errors).flat() : [payload.message || 'Terjadi kesalahan.'];
+        throw new Error(messages.join('\n'));
+      }
+
+      return payload;
+    }
+
+    async function sendCartRequest(url, options) {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': csrfToken,
+          ...(options.headers || {}),
+        },
+      });
+      const payload = await response.json();
+
+      if (!response.ok) {
+        const messages = payload.errors ? Object.values(payload.errors).flat() : [payload.message || 'Keranjang gagal diperbarui.'];
         throw new Error(messages.join('\n'));
       }
 
@@ -518,7 +579,7 @@
     // --- FUNGSI SHOW / HIDE PANEL PEMBAYARAN ---
     function showPaymentSection() {
       if (cart.length === 0) {
-        alert('Keranjang masih kosong! Silahkan pilih menu terlebih dahulu.');
+        showToast('Keranjang masih kosong! Silakan pilih menu terlebih dahulu.');
         return;
       }
       document.getElementById('cart-footer-btn').classList.add('hidden');
@@ -548,10 +609,33 @@
       }
     }
 
-    function processPayment() {
+    async function processPayment() {
       if (cart.length === 0) return;
-      alert(`Pembayaran dengan ${selectedPaymentMethod.toUpperCase()} Berhasil! Mencetak Struk...`);
-      clearCart();
+      const processButton = document.getElementById('process-transaction-button');
+      if (processButton.disabled) return;
+
+      processButton.disabled = true;
+      processButton.textContent = 'Menyimpan...';
+
+      try {
+        const payload = await sendCartRequest(transactionStoreUrl, {
+          method: 'POST',
+          body: JSON.stringify({ metode_pembayaran: selectedPaymentMethod }),
+        });
+        cart = [];
+        noteEditorItemId = null;
+        hidePaymentSection();
+        renderCart();
+        showToast(`Transaksi #${payload.transaksi.id} berhasil disimpan. Struk siap dicetak.`, 'success');
+      } catch (error) {
+        showToast(error.message);
+        window.setTimeout(() => window.location.reload(), 1600);
+      } finally {
+        if (cart.length > 0) {
+          processButton.disabled = false;
+          processButton.textContent = 'Cetak Struk';
+        }
+      }
     }
 
     // --- MODAL & CART FUNCTIONS ---
@@ -574,7 +658,7 @@
       const category = document.getElementById('add-category').value;
 
       if (!name || price <= 0) {
-        alert('Mohon isi Nama Produk dan Harga dengan benar!');
+        showToast('Mohon isi nama produk dan harga dengan benar.');
         return;
       }
 
@@ -593,7 +677,7 @@
         renderProducts();
         closeAddModal();
       } catch (error) {
-        alert(error.message);
+        showToast(error.message);
       }
     }
 
@@ -687,7 +771,7 @@
         renderProducts();
         closeEditModal();
       } catch (error) {
-        alert(error.message);
+        showToast(error.message);
       }
     }
 
@@ -706,7 +790,7 @@
         document.getElementById('deleted-item-name').innerText = p.name;
         document.getElementById('deleteSuccessModal').classList.remove('hidden');
       } catch (error) {
-        alert(error.message);
+        showToast(error.message);
       }
     }
 
@@ -720,47 +804,82 @@
         renderProducts();
         closeModal('deleteSuccessModal');
       } catch (error) {
-        alert(error.message);
+        showToast(error.message);
       }
     }
 
-    function addToCart(productId) {
+    async function addToCart(productId) {
       const product = products.find(p => p.id === productId);
       if (!product || product.status !== 'instock') return;
 
-      const existing = cart.find(i => i.id === productId);
+      try {
+        const payload = await sendCartRequest(`${cartBaseUrl}/tambah/${productId}`, {
+          method: 'POST',
+          body: JSON.stringify({ jumlah: 1 }),
+        });
+        const existing = cart.find(item => item.id === productId);
 
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({ ...product, qty: 1, note: '' });
+        if (existing) {
+          existing.qty = Number(payload.item.jumlah);
+          existing.price = Number(payload.item.harga);
+        } else {
+          cart.push({
+            id: Number(payload.item.id_menu),
+            name: payload.item.nama_menu,
+            price: Number(payload.item.harga),
+            qty: Number(payload.item.jumlah),
+            note: '',
+          });
+        }
+
+        renderCart();
+      } catch (error) {
+        showToast(error.message);
       }
-
-      renderCart();
     }
 
-    function changeQty(productId, delta) {
+    async function changeQty(productId, delta) {
       const item = cart.find(i => i.id === productId);
       if (!item) return;
 
-      item.qty += delta;
+      const nextQuantity = item.qty + delta;
 
-      if (item.qty <= 0) {
-        cart = cart.filter(i => i.id !== productId);
+      try {
+        if (nextQuantity <= 0) {
+          await sendCartRequest(`${cartBaseUrl}/hapus/${productId}`, { method: 'DELETE' });
+          cart = cart.filter(cartItem => cartItem.id !== productId);
 
-        if (noteEditorItemId === productId) {
-          noteEditorItemId = null;
+          if (noteEditorItemId === productId) {
+            noteEditorItemId = null;
+          }
+        } else {
+          const payload = await sendCartRequest(`${cartBaseUrl}/update/${productId}`, {
+            method: 'POST',
+            body: JSON.stringify({ jumlah: nextQuantity }),
+          });
+          item.qty = Number(payload.item.jumlah);
+          item.price = Number(payload.item.harga);
         }
-      }
 
-      renderCart();
+        renderCart();
+      } catch (error) {
+        showToast(error.message);
+        window.setTimeout(() => window.location.reload(), 1600);
+      }
     }
 
-    function clearCart() {
-      cart = [];
-      noteEditorItemId = null;
-      hidePaymentSection();
-      renderCart();
+    async function clearCart() {
+      if (cart.length === 0) return;
+
+      try {
+        await sendCartRequest(cartBaseUrl, { method: 'DELETE' });
+        cart = [];
+        noteEditorItemId = null;
+        hidePaymentSection();
+        renderCart();
+      } catch (error) {
+        showToast(error.message);
+      }
     }
 
     function openItemNote(productId) {

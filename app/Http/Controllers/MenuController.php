@@ -16,6 +16,7 @@ class MenuController extends Controller
     {
         return view('menu.index', [
             'menus' => Menu::query()->orderBy('nama_menu')->get(),
+            'cart' => session()->get('cart', []),
         ]);
     }
 
