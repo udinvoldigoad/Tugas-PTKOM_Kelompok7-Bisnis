@@ -1,68 +1,129 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Kasir Kafe - Coffe Ridho
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi kasir berbasis Laravel untuk mengelola menu, keranjang, transaksi, dan profil pengguna Kafe Ridho. Halaman menu publik dapat dibuka tanpa login, sedangkan operasi kasir dan pengelolaan menu memerlukan akun internal.
 
-## About Laravel
+## Fitur yang tersedia
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Menu publik responsif dengan foto, kategori, harga, dan status ketersediaan.
+- Login khusus akun internal; registrasi publik, verifikasi email, dan reset password melalui email dinonaktifkan.
+- Kelola menu: tambah, edit, unggah atau hapus foto, ubah status tersedia/habis, soft delete, dan pemulihan menu.
+- Keranjang berbasis session dengan harga yang selalu dihitung dari database.
+- Catatan pesanan sementara selama transaksi.
+- Checkout dengan PPN 10% dan metode pembayaran Cash atau QRIS.
+- Penyimpanan transaksi dan detail transaksi secara atomik menggunakan database transaction.
+- Profil pengguna, perubahan password, avatar, status akun, serta pencatatan waktu login terakhir.
+- Validasi terhadap keranjang kosong, jumlah tidak valid, menu habis, manipulasi harga dari browser, klik checkout berulang, dan kegagalan database.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Teknologi
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.3 atau lebih baru
+- Laravel 13
+- MySQL atau SQLite
+- Blade, Tailwind CSS, Alpine.js, dan Vite
+- PHPUnit 12
 
-## Learning Laravel
+## Instalasi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```powershell
+git clone https://github.com/udinvoldigoad/Tugas-PTKOM_Kelompok7-Bisnis.git
+cd Tugas-PTKOM_Kelompok7-Bisnis
+composer install
+Copy-Item .env.example .env
+php artisan key:generate
+npm install
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Untuk MySQL Laragon, buat database `kasir_kafe`, lalu sesuaikan bagian berikut pada `.env`:
 
-## Contributing
+```env
+APP_NAME="Coffe Ridho"
+APP_URL=http://127.0.0.1:8000
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=kasir_kafe
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## Code of Conduct
+Jalankan migrasi, seeder, dan buat symbolic link untuk foto menu serta avatar:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```powershell
+php artisan migrate --seed
+php artisan storage:link
+npm run build
+```
 
-## Security Vulnerabilities
+Jalankan aplikasi:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```powershell
+php artisan serve
+```
 
-## License
+Buka `http://127.0.0.1:8000` untuk menu publik atau `http://127.0.0.1:8000/login` untuk login kasir.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Akun pengembangan
 
-# Catatan Relasi Database Kasir Kafe
+Seeder menyediakan akun berikut:
 
-1. User (1) -> Transaksi (N): Satu Admin/Kasir dapat mencatat banyak transaksi.
-2. Transaksi (1) -> DetailTransaksi (N): Satu header transaksi memiliki banyak item detail pesanan.
-3. Menu (1) -> DetailTransaksi (N): Satu menu dapat muncul di banyak detail transaksi.
+| Email | Password |
+| --- | --- |
+| `kasir@kasirkafe.test` | `password` |
 
-## Aturan Transaksi & Menu:
-- Perubahan harga menu tidak boleh merusak riwayat transaksi lama (subtotal disimpan terpisah di detail_transaksis).
-- Penghapusan menu menggunakan mekanisme soft delete agar riwayat transaksi tetap valid.
+Akun tersebut hanya untuk lingkungan lokal dan harus diganti sebelum aplikasi digunakan di lingkungan produksi.
+
+## Route utama
+
+| Halaman | URL | Akses |
+| --- | --- | --- |
+| Menu publik | `/` | Publik |
+| Login kasir | `/login` | Publik |
+| Profil | `/dashboard` atau `/profile` | Pengguna login |
+| Kasir dan kelola menu | `/kelola-menu` | Pengguna login |
+| Keranjang server | `/kasir/keranjang` | Pengguna login |
+
+## Pengujian dan format kode
+
+```powershell
+php artisan test
+vendor\bin\pint --format agent
+```
+
+Jika ekstensi SQLite CLI belum aktif di Windows, pengujian dapat dijalankan dengan:
+
+```powershell
+php -d extension=pdo_sqlite vendor/bin/phpunit
+```
+
+## Struktur data transaksi
+
+- Satu pengguna dapat mencatat banyak transaksi.
+- Satu transaksi memiliki banyak detail transaksi.
+- Satu menu dapat muncul pada banyak detail transaksi.
+- Subtotal setiap item disimpan pada detail transaksi agar perubahan harga menu tidak mengubah riwayat lama.
+- Menu menggunakan soft delete agar relasi transaksi lama tetap valid.
+- Total transaksi mencakup PPN 10%.
+- Metode pembayaran disimpan sebagai `cash` atau `qris`.
+- Catatan pesanan hanya digunakan selama proses pemesanan dan tidak disimpan ke database.
+
+## Status pengembangan
+
+Fitur inti menu, keranjang, checkout, dan profil sudah tersedia. Pekerjaan berikutnya meliputi:
+
+- pembatasan akses berdasarkan role admin dan kasir;
+- riwayat transaksi;
+- cetak struk;
+- dashboard statistik penjualan;
+- perapian nama route agar halaman profil, dashboard, kasir, dan kelola menu terpisah dengan jelas.
+
+## Pembagian peran tim
+
+| Anggota | Tanggung jawab |
+| --- | --- |
+| Ridho | Project manager |
+| Irfan | UI/UX dan pemeriksaan desain |
+| Niken | Frontend autentikasi, menu publik, riwayat, dan dashboard |
+| Faza | Frontend autentikasi, menu publik, riwayat, dan dashboard |
+| Qinta | Backend autentikasi, menu, riwayat, dan deployment |
+| Bagas | Backend database, keranjang, transaksi, dan statistik penjualan |
