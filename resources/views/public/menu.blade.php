@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;0,900;1,600&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen bg-[#20201F] text-[#5B302B]" style="font-family: 'Barlow Condensed', sans-serif">
+<body class="min-h-screen bg-[#20201F] text-[#5B302B] md:bg-[#E8CF98]" style="font-family: 'Barlow Condensed', sans-serif">
     @php
         $availableMenus = $menus->where('status_ketersediaan', 'tersedia');
         $promoMenus = $availableMenus->take(2);
@@ -20,8 +20,8 @@
         $featuredMenu = $availableMenus->first() ?? $menus->first();
     @endphp
 
-    <div class="mx-auto min-h-screen w-full max-w-6xl overflow-hidden bg-[#E8CF98] shadow-[0_0_60px_rgba(0,0,0,0.35)]">
-        <header class="flex h-16 items-center justify-between border-b border-[#6E4439]/20 bg-[#F8F2E8] px-5 sm:px-8 lg:h-[72px] lg:px-12">
+    <div class="mx-auto min-h-screen w-full overflow-hidden bg-[#E8CF98] shadow-[0_0_60px_rgba(0,0,0,0.35)] md:max-w-none md:shadow-none">
+        <header class="flex h-16 items-center justify-between border-b border-[#6E4439]/20 bg-[#F8F2E8] px-5 sm:px-8 lg:h-[72px] lg:px-16 xl:px-24">
             <a href="{{ url('/') }}" class="flex items-center gap-3" aria-label="Kembali ke halaman utama">
                 <img src="{{ asset('depan/logo.png') }}" alt="Logo Coffe Ridho" class="h-10 w-10 object-contain">
                 <span class="text-base font-black uppercase leading-[0.85] tracking-wider text-[#321B18]">Coffe<br>Ridho</span>
@@ -33,10 +33,10 @@
         </header>
 
         <main>
-            <section class="relative isolate min-h-[280px] overflow-hidden bg-[#2D2623] sm:min-h-[340px] lg:min-h-[400px]">
+            <section class="relative isolate min-h-[280px] overflow-hidden bg-[#2D2623] sm:min-h-[320px] lg:min-h-[330px]">
                 <img src="{{ asset('depan/fotoditempatputih.png') }}" alt="Es kopi susu Coffe Ridho" class="absolute inset-0 h-full w-full object-cover opacity-90">
                 <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(38,25,21,0.82)_0%,rgba(38,25,21,0.18)_52%,rgba(38,25,21,0.72)_100%)]"></div>
-                <div class="relative flex min-h-[280px] items-center justify-between gap-5 px-6 py-10 text-[#FFF8EC] sm:min-h-[340px] sm:px-12 lg:min-h-[400px] lg:px-16">
+                <div class="relative flex min-h-[280px] items-center justify-between gap-5 px-6 py-10 text-[#FFF8EC] sm:min-h-[320px] sm:px-12 lg:min-h-[330px] lg:px-16 xl:px-24">
                     <div class="max-w-[11rem] sm:max-w-xs">
                         <p class="text-4xl font-black uppercase leading-[0.82] tracking-tight sm:text-6xl">Coffee</p>
                         <p class="mt-3 text-sm font-semibold uppercase tracking-[0.18em] text-[#F1D49A]">Diracik saat dipesan</p>
@@ -57,7 +57,7 @@
                 </section>
             @else
                 @if ($promoMenus->isNotEmpty())
-                    <section class="relative px-5 pb-8 pt-7 sm:px-8 lg:px-12 lg:pb-10 lg:pt-9">
+                    <section class="relative mx-auto max-w-7xl px-5 pb-8 pt-7 sm:px-8 lg:px-12 lg:pb-10 lg:pt-9">
                         <div class="absolute -left-5 top-5 h-14 w-14 rounded-full bg-[#C9AA6F]/70"></div>
                         <div class="relative grid grid-cols-1 gap-4 sm:grid-cols-2">
                             @foreach ($promoMenus as $index => $menu)
@@ -80,7 +80,7 @@
                     </section>
                 @endif
 
-                <div class="md:px-8 xl:grid xl:grid-cols-2 xl:gap-8 xl:px-12 xl:py-10">
+                <div class="mx-auto max-w-7xl md:px-8 xl:grid xl:grid-cols-2 xl:gap-8 xl:px-12 xl:py-10">
                     @foreach ([
                         ['title' => 'Menu Kopi', 'menus' => $coffeeMenus],
                         ['title' => 'Menu Non Kopi', 'menus' => $nonCoffeeMenus],
@@ -117,7 +117,7 @@
                 </div>
 
                 @if ($featuredMenu)
-                    <section class="px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
+                    <section class="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-12 lg:py-10">
                         <div class="grid overflow-hidden rounded-lg border-2 border-[#8A5D4A] bg-[#F5E9D6] shadow-[4px_4px_0_#B79562] sm:grid-cols-[1.1fr_1fr]">
                             <div class="min-h-56 bg-[#E5CE9F]">
                                 @if ($featuredMenu->foto)
@@ -136,7 +136,7 @@
                 @endif
 
                 @if ($foodMenus->isNotEmpty())
-                    <section class="px-5 pb-12 pt-7 sm:px-8 lg:px-12 lg:pb-14 lg:pt-10">
+                    <section class="mx-auto max-w-7xl px-5 pb-12 pt-7 sm:px-8 lg:px-12 lg:pb-14 lg:pt-10">
                         <div class="mb-4 flex items-end gap-3 border-b-2 border-[#9E7652] pb-2">
                             <h2 class="text-3xl font-black uppercase leading-none text-[#FFF9ED] [text-shadow:2px_2px_0_#9E7652]">Makanan & Dessert</h2>
                         </div>
