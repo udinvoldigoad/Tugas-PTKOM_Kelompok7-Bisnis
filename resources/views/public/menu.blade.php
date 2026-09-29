@@ -24,6 +24,19 @@
         .menu-card { box-shadow: 4px 5px 0 rgb(62 43 31 / 18%); }
         .menu-card:hover { transform: translateY(-4px); box-shadow: 5px 9px 0 rgb(62 43 31 / 20%); }
         .promo-art { transform: scale(1.55); }
+        .menu-intro { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; overflow: hidden; pointer-events: none; background: var(--sand); transition: opacity .45s ease, visibility .45s ease; }
+        .menu-intro::before, .menu-intro::after { position: absolute; width: 16rem; height: 16rem; border-radius: 999px; background: #c2a05f; content: ''; opacity: .55; }
+        .menu-intro::before { top: -7rem; left: -7rem; }
+        .menu-intro::after { right: -7rem; bottom: -7rem; }
+        .menu-intro__content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; animation: introContent .9s cubic-bezier(.22,1,.36,1) both; }
+        .menu-intro__logo { width: 5.5rem; height: 5.5rem; object-fit: contain; animation: introLogo .9s cubic-bezier(.22,1,.36,1) both; }
+        .menu-intro__name { margin-top: 1rem; font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 700; line-height: .9; letter-spacing: .08em; text-align: center; }
+        .menu-intro__line { width: 0; height: 3px; margin-top: 1.25rem; border-radius: 999px; background: var(--orange); animation: introLine .75s .25s cubic-bezier(.22,1,.36,1) forwards; }
+        .menu-intro.is-leaving { visibility: hidden; opacity: 0; }
+        @keyframes introLogo { from { transform: translateY(1rem) scale(.72); opacity: 0; } to { transform: none; opacity: 1; } }
+        @keyframes introContent { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes introLine { to { width: 7rem; } }
+        @media (prefers-reduced-motion: reduce) { .menu-intro { display: none; } }
         .hero-shell { width: calc(100% - 1rem); margin: .75rem auto 0; border: 2px solid rgb(44 33 29 / 70%); border-radius: 24px; box-shadow: 6px 7px 0 rgb(92 67 44 / 20%); }
         .hero-shade { background: linear-gradient(90deg, rgb(17 12 9 / 72%) 0%, rgb(17 12 9 / 8%) 52%, rgb(17 12 9 / 68%) 100%); }
         @media (min-width: 1024px) {
@@ -37,6 +50,14 @@
     </style>
 </head>
 <body>
+    <div id="menu-intro" class="menu-intro" aria-hidden="true">
+        <div class="menu-intro__content">
+            <img src="{{ asset('depan/logo.png') }}" alt="" class="menu-intro__logo">
+            <p class="menu-intro__name">COFFE<br>RIDHO</p>
+            <span class="menu-intro__line"></span>
+        </div>
+    </div>
+
     @php
         $availableMenus = $menus->where('status_ketersediaan', 'tersedia');
         $coffeeMenus = $menus->where('kategori', 'Kopi')->values();
@@ -168,5 +189,30 @@
     <footer class="mt-10 border-t-2 border-black/10 bg-[#f7f0e8] px-5 py-8 text-center text-sm font-bold">
         <p>Coffe Ridho · Kopi hangat untuk setiap cerita.</p>
     </footer>
+    <script>
+        (() => {
+            const intro = document.getElementById('menu-intro');
+            let hasSeenIntro = false;
+
+            try {
+                hasSeenIntro = sessionStorage.getItem('coffe-ridho-menu-intro') === 'seen';
+            } catch (error) {
+                hasSeenIntro = false;
+            }
+
+            if (hasSeenIntro || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                intro.remove();
+                return;
+            }
+
+            try {
+                sessionStorage.setItem('coffe-ridho-menu-intro', 'seen');
+            } catch (error) {
+                // Animasi tetap berjalan jika penyimpanan browser tidak tersedia.
+            }
+            window.setTimeout(() => intro.classList.add('is-leaving'), 1100);
+            window.setTimeout(() => intro.remove(), 1600);
+        })();
+    </script>
 </body>
 </html>

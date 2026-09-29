@@ -6,16 +6,14 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicMenuController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PublicMenuController::class, 'index'])->name('public.menu');
 
 Route::get('/dashboard', function () {
     return view('dashboard', ['user' => request()->user()]);
 })->middleware('auth')->name('dashboard');
 
-// Menu Publik
-Route::get('/menu', [PublicMenuController::class, 'index'])->name('public.menu');
+// Tautan lama menu publik tetap berfungsi.
+Route::redirect('/menu', '/');
 
 // Rute yang Membutuhkan Login (Auth)
 Route::middleware('auth')->group(function () {
