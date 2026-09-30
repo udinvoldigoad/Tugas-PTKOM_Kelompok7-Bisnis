@@ -32,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/kasir/keranjang', [CartController::class, 'clear'])->name('cart.clear');
     Route::post('/kasir/transaksi', [TransaksiController::class, 'store'])->name('transactions.store');
 
+    Route::get('/riwayat', [TransaksiController::class, 'index'])->name('transactions.index');
+    Route::get('/riwayat/{transaksi}', [TransaksiController::class, 'show'])->name('transactions.show');
+
     Route::get('/kelola-menu', [MenuController::class, 'index'])->name('menu.index');
     Route::post('/kelola-menu', [MenuController::class, 'store'])->name('menu.store');
     Route::patch('/kelola-menu/{menu}', [MenuController::class, 'update'])->name('menu.update');
