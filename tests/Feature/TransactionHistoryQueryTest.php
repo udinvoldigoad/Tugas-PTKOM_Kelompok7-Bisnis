@@ -53,6 +53,42 @@ class TransactionHistoryQueryTest extends TestCase
         $this->assertNotNull($latestTransaction->detailTransaksi->first()->menu->deleted_at);
     }
 
+    public function test_historical_amounts_remain_stable_after_menu_is_changed_and_deleted(): void
+    {
+        $cashier = User::factory()->create();
+        $menu = Menu::create([
+            'nama_menu' => 'Kopi Susu',
+            'kategori' => 'Kopi',
+            'harga' => 22000,
+            'status_ketersediaan' => 'tersedia',
+        ]);
+        $transaction = $this->createTransaction($cashier, now());
+        $transaction->update(['total_harga' => 48400]);
+        DetailTransaksi::create([
+            'transaksi_id' => $transaction->id,
+            'menu_id' => $menu->id,
+            'jumlah' => 2,
+            'subtotal' => 44000,
+        ]);
+
+        $menu->update([
+            'nama_menu' => 'Kopi Susu Premium',
+            'harga' => 99000,
+            'status_ketersediaan' => 'habis',
+        ]);
+        $menu->delete();
+
+        $history = Transaksi::query()->riwayatTerbaru()->findOrFail($transaction->id);
+        $detail = $history->detailTransaksi->sole();
+
+        $this->assertSame(48400, $history->total_harga);
+        $this->assertSame(2, $detail->jumlah);
+        $this->assertSame(44000, $detail->subtotal);
+        $this->assertSame(22000, intdiv((int) $detail->subtotal, $detail->jumlah));
+        $this->assertSame(99000, $detail->menu->harga);
+        $this->assertTrue($detail->menu->trashed());
+    }
+
     private function createTransaction(User $cashier, CarbonInterface $date): Transaksi
     {
         return Transaksi::create([

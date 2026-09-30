@@ -41,6 +41,18 @@ class TransactionHistoryRouteTest extends TestCase
             });
     }
 
+    public function test_authenticated_user_sees_empty_state_when_there_are_no_transactions(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('transactions.index'));
+
+        $response->assertOk()
+            ->assertViewIs('riwayat.index')
+            ->assertViewHas('transaksis', fn ($transaksis): bool => $transaksis->isEmpty())
+            ->assertSee('Belum ada transaksi.');
+    }
+
     public function test_authenticated_user_can_view_transaction_details_with_deleted_menu(): void
     {
         $cashier = User::factory()->create(['name' => 'Qinta']);
