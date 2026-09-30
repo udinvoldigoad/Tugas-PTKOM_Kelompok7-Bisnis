@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+[x-cloak] { display: none !important; }
 .profile-shell { display: flex; width: 100%; min-height: 100dvh; }
 .profile-sidebar { position: sticky; top: 0; align-self: flex-start; display: flex; flex-direction: column; align-items: center; justify-content: space-between; flex-shrink: 0; width: 100px; height: 100dvh; min-height: 460px; padding: 30px 24px 40px; background: #dec99b; color: #dec99b; z-index: 10; }
 html.sidebar-expanded .profile-sidebar { width: 200px; }
