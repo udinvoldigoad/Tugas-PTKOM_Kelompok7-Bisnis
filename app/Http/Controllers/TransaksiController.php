@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\Transaksi;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,13 +17,54 @@ class TransaksiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $transaksis = Transaksi::query()
-            ->riwayatTerbaru()
-            ->paginate(15);
+        $query = Transaksi::query()->riwayatTerbaru();
+        $search = trim((string) $request->query('q', ''));
+        $paymentMethod = (string) $request->query('payment', '');
+        $cashierId = $request->integer('cashier');
+        $period = (string) $request->query('period', '');
 
-        return view('riwayat.index', compact('transaksis'));
+        if ($search !== '') {
+            $transactionId = (int) preg_replace('/\D/', '', $search);
+
+            $query->where(function ($query) use ($search, $transactionId): void {
+                if ($transactionId > 0) {
+                    $query->whereKey($transactionId);
+                }
+
+                $query->orWhereHas('user', function ($query) use ($search): void {
+                    $query->where('name', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if (in_array($paymentMethod, ['cash', 'qris'], true)) {
+            $query->where('metode_pembayaran', $paymentMethod);
+        }
+
+        if ($cashierId > 0) {
+            $query->where('user_id', $cashierId);
+        }
+
+        match ($period) {
+            'today' => $query->whereDate('tanggal', today()),
+            'yesterday' => $query->whereDate('tanggal', today()->subDay()),
+            'week' => $query->whereBetween('tanggal', [now()->startOfWeek(), now()->endOfWeek()]),
+            'month' => $query->whereYear('tanggal', now()->year)->whereMonth('tanggal', now()->month),
+            'custom' => $query
+                ->when($request->date('date_from'), fn ($query, $date) => $query->whereDate('tanggal', '>=', $date))
+                ->when($request->date('date_to'), fn ($query, $date) => $query->whereDate('tanggal', '<=', $date)),
+            default => null,
+        };
+
+        $transaksis = $query->paginate(10)->withQueryString();
+        $cashiers = User::query()
+            ->whereIn('id', Transaksi::query()->select('user_id'))
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return view('riwayat.index', compact('transaksis', 'cashiers'));
     }
 
     /**

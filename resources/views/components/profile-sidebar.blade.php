@@ -28,11 +28,11 @@
           <circle cx="16" cy="18" r="0.8" fill="white"/>
           <rect x="5" y="21" width="22" height="5" rx="1.5" />
         </svg></span><span class="sidebar-label">Kasir</span></a>
-<button type="button" class="sidebar-item" disabled aria-label="Riwayat, belum tersedia" title="Riwayat belum tersedia"><span class="sidebar-icon"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+<a href="{{ route('transactions.index') }}" class="sidebar-item {{ $active === 'riwayat' ? 'is-active' : '' }}" aria-label="Riwayat" title="Riwayat" @if($active === 'riwayat') aria-current="page" @endif><span class="sidebar-icon"><svg width="26" height="26" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M 8 16 A 8 8 0 1 1 12 23.5" />
           <polyline points="5,11 8,16 13,13" fill="currentColor" stroke="none"/>
           <polyline points="16,11 16,16 20,16" stroke-width="3"/>
-        </svg></span><span class="sidebar-label">Riwayat</span></button>
+        </svg></span><span class="sidebar-label">Riwayat</span></a>
 <a href="{{ route('dashboard') }}" class="sidebar-item {{ $active === 'profil' ? 'is-active' : '' }}" aria-label="Profil" title="Profil" @if($active === 'profil') aria-current="page" @endif><span class="sidebar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
           <circle cx="12" cy="7.5" r="4" />
           <path d="M4 19 C4 15.5, 7.5 14, 12 14 C16.5 14, 20 15.5, 20 19 Z" />

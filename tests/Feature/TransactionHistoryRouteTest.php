@@ -50,7 +50,27 @@ class TransactionHistoryRouteTest extends TestCase
         $response->assertOk()
             ->assertViewIs('riwayat.index')
             ->assertViewHas('transaksis', fn ($transaksis): bool => $transaksis->isEmpty())
-            ->assertSee('Belum ada transaksi.');
+            ->assertSeeText('Belum ada transaksi');
+    }
+
+    public function test_transaction_history_can_be_filtered_by_receipt_payment_and_cashier(): void
+    {
+        $cashier = User::factory()->create(['name' => 'Qinta']);
+        $otherCashier = User::factory()->create(['name' => 'Bagas']);
+        $matchingTransaction = $this->createTransaction($cashier);
+        $matchingTransaction->update(['metode_pembayaran' => 'qris']);
+        $this->createTransaction($otherCashier);
+
+        $response = $this->actingAs($cashier)->get(route('transactions.index', [
+            'q' => 'TRX-'.$matchingTransaction->id,
+            'payment' => 'qris',
+            'cashier' => $cashier->id,
+        ]));
+
+        $response->assertOk()
+            ->assertViewHas('transaksis', function ($transaksis) use ($matchingTransaction): bool {
+                return $transaksis->getCollection()->modelKeys() === [$matchingTransaction->id];
+            });
     }
 
     public function test_authenticated_user_can_view_transaction_details_with_deleted_menu(): void

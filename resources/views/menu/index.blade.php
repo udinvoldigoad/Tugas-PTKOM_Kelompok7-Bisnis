@@ -609,6 +609,14 @@
       }
     }
 
+    function resetProcessButton() {
+      const processButton = document.getElementById('process-transaction-button');
+      if (!processButton) return;
+
+      processButton.disabled = false;
+      processButton.textContent = 'Cetak Struk';
+    }
+
     async function processPayment() {
       if (cart.length === 0) return;
       const processButton = document.getElementById('process-transaction-button');
@@ -629,12 +637,8 @@
         showToast(`Transaksi #${payload.transaksi.id} berhasil disimpan. Struk siap dicetak.`, 'success');
       } catch (error) {
         showToast(error.message);
-        window.setTimeout(() => window.location.reload(), 1600);
       } finally {
-        if (cart.length > 0) {
-          processButton.disabled = false;
-          processButton.textContent = 'Cetak Struk';
-        }
+        resetProcessButton();
       }
     }
 
