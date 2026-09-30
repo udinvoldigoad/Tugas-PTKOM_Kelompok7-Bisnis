@@ -20,4 +20,14 @@ class Transaksi extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // F6-01: riwayat transaksi terbaru beserta detail item, kasir, dan menu
+    // (menu yang sudah dihapus tetap ikut karena withTrashed di DetailTransaksi).
+    public function scopeRiwayatTerbaru($query)
+    {
+        return $query
+            ->with(['user:id,name', 'detailTransaksi.menu'])
+            ->orderByDesc('tanggal')
+            ->orderByDesc('id');
+    }
 }
