@@ -9,15 +9,20 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class TransaksiController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): View
     {
-        //
+        $transaksis = Transaksi::query()
+            ->riwayatTerbaru()
+            ->paginate(15);
+
+        return view('riwayat.index', compact('transaksis'));
     }
 
     /**
@@ -104,9 +109,11 @@ class TransaksiController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Transaksi $transaksi)
+    public function show(Transaksi $transaksi): View
     {
-        //
+        $transaksi->load(['user:id,name', 'detailTransaksi.menu']);
+
+        return view('riwayat.show', compact('transaksi'));
     }
 
     /**
