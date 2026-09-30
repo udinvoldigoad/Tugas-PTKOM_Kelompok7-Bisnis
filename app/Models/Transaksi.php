@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Transaksi extends Model
 {
@@ -10,20 +13,21 @@ class Transaksi extends Model
     protected $fillable = ['user_id', 'tanggal', 'total_harga', 'metode_pembayaran'];
 
     // Relasi One-to-Many ke DetailTransaksi
-    public function detailTransaksi()
+    public function detailTransaksi(): HasMany
     {
         return $this->hasMany(DetailTransaksi::class);
     }
 
     // Relasi Belongs-To ke User (Kasir)
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // F6-01: riwayat transaksi terbaru beserta detail item, kasir, dan menu
-    // (menu yang sudah dihapus tetap ikut karena withTrashed di DetailTransaksi).
-    public function scopeRiwayatTerbaru($query)
+    /**
+     * Urutkan riwayat terbaru dan muat data kasir beserta item transaksinya.
+     */
+    public function scopeRiwayatTerbaru(Builder $query): Builder
     {
         return $query
             ->with(['user:id,name', 'detailTransaksi.menu'])
