@@ -63,6 +63,23 @@ class SalesSummaryTest extends TestCase
             ->assertSee('Rp 24.200');
     }
 
+    public function test_sales_summary_is_empty_when_there_are_no_transactions_today(): void
+    {
+        $cashier = User::factory()->create();
+        $today = CarbonImmutable::parse('2026-10-02 12:00:00', 'Asia/Jakarta');
+
+        $this->assertSame(0, Transaksi::totalPenjualanHariIni($today));
+        $this->assertTrue(DetailTransaksi::menuTerlarisHariIni($today)->isEmpty());
+
+        $this->travelTo($today);
+
+        $this->actingAs($cashier)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('Rp 0')
+            ->assertSee('Belum ada penjualan');
+    }
+
     public function test_menu_terlaris_is_ranked_by_sold_quantity_instead_of_transaction_count(): void
     {
         $cashier = User::factory()->create();
