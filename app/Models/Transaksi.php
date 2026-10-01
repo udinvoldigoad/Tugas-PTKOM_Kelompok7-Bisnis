@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -33,5 +34,24 @@ class Transaksi extends Model
             ->with(['user:id,name', 'detailTransaksi.menu'])
             ->orderByDesc('tanggal')
             ->orderByDesc('id');
+    }
+
+    public function scopePadaTanggalLaporan(Builder $query, CarbonInterface $date): Builder
+    {
+        $startOfDay = $date->copy()->timezone(config('app.timezone'))->startOfDay();
+        $endOfDay = $startOfDay->copy()->addDay();
+
+        return $query
+            ->where('tanggal', '>=', $startOfDay)
+            ->where('tanggal', '<', $endOfDay);
+    }
+
+    public static function totalPenjualanHariIni(?CarbonInterface $today = null): int
+    {
+        $today ??= now(config('app.timezone'));
+
+        return (int) static::query()
+            ->padaTanggalLaporan($today)
+            ->sum('total_harga');
     }
 }

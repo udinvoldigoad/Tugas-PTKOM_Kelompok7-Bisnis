@@ -341,6 +341,23 @@
                                                 Aktif
                                             </strong>
                                         </div>
+                                        <div class="rounded-lg bg-[#F4F2ED] px-3 py-2.5">
+                                            <span class="block text-[10px] font-mono text-[#78756F] mb-1">Penjualan Hari Ini</span>
+                                            <strong class="block text-xs font-mono text-[#1E1B18]">
+                                                Rp {{ number_format($totalPenjualanHariIni ?? 0, 0, ',', '.') }}
+                                            </strong>
+                                        </div>
+                                        <div class="rounded-lg bg-[#F4F2ED] px-3 py-2.5">
+                                            <span class="block text-[10px] font-mono text-[#78756F] mb-1">Menu Terlaris Hari Ini</span>
+                                            <strong class="block text-xs font-mono text-[#1E1B18]">
+                                                @if(($menuTerlarisHariIni ?? collect())->isNotEmpty())
+                                                    {{ $menuTerlarisHariIni->first()->nama_menu }}
+                                                    <span class="font-normal text-[#78756F]">({{ $menuTerlarisHariIni->first()->total_terjual }} item)</span>
+                                                @else
+                                                    Belum ada penjualan
+                                                @endif
+                                            </strong>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicMenuController;
@@ -9,9 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicMenuController::class, 'index'])->name('public.menu');
 
-Route::get('/dashboard', function () {
-    return view('dashboard', ['user' => request()->user()]);
-})->middleware('auth')->name('dashboard');
+Route::get('/dashboard', DashboardController::class)->middleware('auth')->name('dashboard');
 
 // Tautan lama menu publik tetap berfungsi.
 Route::redirect('/menu', '/');
