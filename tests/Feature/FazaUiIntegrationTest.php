@@ -12,12 +12,12 @@ class FazaUiIntegrationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_dashboard_renders_the_signed_in_profile_without_transaction_data(): void
+    public function test_dashboard_renders_the_signed_in_cashiers_empty_sales_state(): void
     {
         $user = User::factory()->create(['name' => 'Rani', 'full_name' => null]);
 
         $this->actingAs($user)->get('/dashboard')
-            ->assertOk()->assertSee('Rani')->assertSee('Informasi pengguna')
+            ->assertOk()->assertSee('Rani')->assertSee('Belum ada penjualan hari ini')
             ->assertDontSee('Proses & Simpan Transaksi')->assertDontSee('Muhammad Irfan Ramadhan');
     }
 
@@ -70,7 +70,7 @@ class FazaUiIntegrationTest extends TestCase
         $user = User::factory()->create(['avatar' => 'avatars/own.png']);
         $other = User::factory()->create(['avatar' => 'avatars/other.png']);
 
-        $this->actingAs($user)->delete('/profile/avatar')->assertRedirect('/dashboard');
+        $this->actingAs($user)->delete('/profile/avatar')->assertRedirect('/profile');
 
         $this->assertNull($user->refresh()->avatar);
         $this->assertSame('avatars/other.png', $other->refresh()->avatar);

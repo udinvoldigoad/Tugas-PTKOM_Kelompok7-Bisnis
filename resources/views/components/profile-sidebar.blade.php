@@ -1,4 +1,4 @@
-@props(['active' => 'profil'])
+@props(['active' => 'dashboard'])
 
 <aside x-data="appSidebar" class="profile-sidebar" aria-label="Navigasi utama">
     <a class="profile-brand" href="{{ route('dashboard') }}" aria-label="Kafe Ridho">
@@ -11,12 +11,12 @@
         <span x-text="sidebarExpanded ? String.fromCharCode(8249) : String.fromCharCode(8250)" aria-hidden="true">&rsaquo;</span>
     </button>
     <nav id="profile-navigation" class="profile-navigation">
-<button type="button" class="sidebar-item" disabled aria-label="Dashboard, belum tersedia" title="Dashboard belum tersedia"><span class="sidebar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+<a href="{{ route('dashboard') }}" class="sidebar-item {{ $active === 'dashboard' ? 'is-active' : '' }}" aria-label="Dashboard" title="Dashboard" @if($active === 'dashboard') aria-current="page" @endif><span class="sidebar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
             <rect x="3" y="3" width="8" height="8" rx="2" />
             <rect x="13" y="3" width="8" height="8" rx="2" />
             <rect x="3" y="13" width="8" height="8" rx="2" />
             <rect x="13" y="13" width="8" height="8" rx="2" />
-          </svg></span><span class="sidebar-label">Dashboard</span></button>
+          </svg></span><span class="sidebar-label">Dashboard</span></a>
 <a href="{{ url('/kelola-menu') }}" class="sidebar-item {{ $active === 'kasir' ? 'is-active' : '' }}" aria-label="Kasir" title="Kasir" @if($active === 'kasir') aria-current="page" @endif><span class="sidebar-icon"><svg width="26" height="26" viewBox="0 0 32 32" fill="currentColor">
           <rect x="11" y="6" width="10" height="6" rx="1" />
           <path d="M7 14 C7 13, 8 12, 9 12 L23 12 C24 12, 25 13, 25 14 L26 21 L6 21 Z" />
@@ -33,7 +33,7 @@
           <polyline points="5,11 8,16 13,13" fill="currentColor" stroke="none"/>
           <polyline points="16,11 16,16 20,16" stroke-width="3"/>
         </svg></span><span class="sidebar-label">Riwayat</span></a>
-<a href="{{ route('dashboard') }}" class="sidebar-item {{ $active === 'profil' ? 'is-active' : '' }}" aria-label="Profil" title="Profil" @if($active === 'profil') aria-current="page" @endif><span class="sidebar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+<a href="{{ route('profile.edit') }}" class="sidebar-item {{ $active === 'profil' ? 'is-active' : '' }}" aria-label="Profil" title="Profil" @if($active === 'profil') aria-current="page" @endif><span class="sidebar-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
           <circle cx="12" cy="7.5" r="4" />
           <path d="M4 19 C4 15.5, 7.5 14, 12 14 C16.5 14, 20 15.5, 20 19 Z" />
         </svg></span><span class="sidebar-label">Profil</span></a>

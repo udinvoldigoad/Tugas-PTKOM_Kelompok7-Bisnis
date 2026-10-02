@@ -29,8 +29,11 @@ class DetailTransaksi extends Model
      *
      * @return Collection<int, self>
      */
-    public static function menuTerlarisHariIni(?CarbonInterface $today = null, int $limit = 5): Collection
-    {
+    public static function menuTerlarisHariIni(
+        ?CarbonInterface $today = null,
+        int $limit = 5,
+        ?int $userId = null,
+    ): Collection {
         $today ??= now(config('app.timezone'));
         $startOfDay = $today->copy()->timezone(config('app.timezone'))->startOfDay();
         $endOfDay = $startOfDay->copy()->addDay();
@@ -40,13 +43,15 @@ class DetailTransaksi extends Model
             ->join('menus', 'menus.id', '=', 'detail_transaksis.menu_id')
             ->where('transaksis.tanggal', '>=', $startOfDay)
             ->where('transaksis.tanggal', '<', $endOfDay)
+            ->when($userId, fn ($query) => $query->where('transaksis.user_id', $userId))
             ->select([
                 'detail_transaksis.menu_id',
                 'menus.nama_menu',
+                'menus.kategori',
             ])
             ->selectRaw('SUM(detail_transaksis.jumlah) as total_terjual')
             ->selectRaw('SUM(detail_transaksis.subtotal) as subtotal_penjualan')
-            ->groupBy('detail_transaksis.menu_id', 'menus.nama_menu')
+            ->groupBy('detail_transaksis.menu_id', 'menus.nama_menu', 'menus.kategori')
             ->orderByDesc('total_terjual')
             ->orderByDesc('subtotal_penjualan')
             ->orderBy('detail_transaksis.menu_id')

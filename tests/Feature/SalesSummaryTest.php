@@ -63,6 +63,38 @@ class SalesSummaryTest extends TestCase
             ->assertSee('Rp 24.200');
     }
 
+    public function test_dashboard_chart_includes_sales_outside_regular_business_hours(): void
+    {
+        $cashier = User::factory()->create();
+        $menu = Menu::create([
+            'nama_menu' => 'Kopi Malam',
+            'kategori' => 'kopi',
+            'harga' => 20000,
+            'status_ketersediaan' => 'tersedia',
+        ]);
+        $transaction = Transaksi::create([
+            'user_id' => $cashier->id,
+            'tanggal' => CarbonImmutable::parse('2026-10-03 01:42:00', 'Asia/Jakarta'),
+            'total_harga' => 40000,
+            'metode_pembayaran' => 'cash',
+        ]);
+
+        DetailTransaksi::create([
+            'transaksi_id' => $transaction->id,
+            'menu_id' => $menu->id,
+            'jumlah' => 2,
+            'subtotal' => 40000,
+        ]);
+
+        $this->travelTo(CarbonImmutable::parse('2026-10-03 02:00:00', 'Asia/Jakarta'));
+
+        $this->actingAs($cashier)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('01:00 - 02:00 (2 Cup)')
+            ->assertDontSee('Belum ada item terjual');
+    }
+
     public function test_sales_summary_is_empty_when_there_are_no_transactions_today(): void
     {
         $cashier = User::factory()->create();

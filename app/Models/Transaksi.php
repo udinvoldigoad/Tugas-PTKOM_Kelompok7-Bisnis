@@ -46,12 +46,13 @@ class Transaksi extends Model
             ->where('tanggal', '<', $endOfDay);
     }
 
-    public static function totalPenjualanHariIni(?CarbonInterface $today = null): int
+    public static function totalPenjualanHariIni(?CarbonInterface $today = null, ?int $userId = null): int
     {
         $today ??= now(config('app.timezone'));
 
         return (int) static::query()
             ->padaTanggalLaporan($today)
+            ->when($userId, fn (Builder $query): Builder => $query->where('user_id', $userId))
             ->sum('total_harga');
     }
 }
