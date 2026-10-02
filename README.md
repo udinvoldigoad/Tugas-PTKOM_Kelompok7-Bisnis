@@ -47,6 +47,14 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
+Isi kredensial akun awal pada `.env` sebelum menjalankan seeder:
+
+```env
+INITIAL_USER_NAME="Kasir Kafe"
+INITIAL_USER_EMAIL=alamat-email-internal
+INITIAL_USER_PASSWORD=password-kuat-minimal-12-karakter
+```
+
 Jalankan migrasi, seeder, dan buat symbolic link untuk foto menu serta avatar:
 
 ```powershell
@@ -63,15 +71,9 @@ php artisan serve
 
 Buka `http://127.0.0.1:8000` untuk menu publik atau `http://127.0.0.1:8000/login` untuk login kasir.
 
-## Akun pengembangan
+## Akun awal
 
-Seeder menyediakan akun berikut:
-
-| Email | Password |
-| --- | --- |
-| `kasir@kasirkafe.test` | `password` |
-
-Akun tersebut hanya untuk lingkungan lokal dan harus diganti sebelum aplikasi digunakan di lingkungan produksi.
+Seeder membuat akun internal berdasarkan `INITIAL_USER_NAME`, `INITIAL_USER_EMAIL`, dan `INITIAL_USER_PASSWORD`. Password tidak mempunyai nilai bawaan dan wajib memiliki minimal 12 karakter.
 
 ## Route utama
 
