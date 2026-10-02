@@ -63,6 +63,64 @@ class SalesSummaryTest extends TestCase
             ->assertSee('Rp 24.200');
     }
 
+    public function test_dashboard_connects_sales_total_and_best_seller_list_to_cashier_data(): void
+    {
+        $cashier = User::factory()->create();
+        $otherCashier = User::factory()->create();
+        $coffee = Menu::create([
+            'nama_menu' => 'Kopi Susu',
+            'kategori' => 'kopi',
+            'harga' => 22000,
+            'status_ketersediaan' => 'tersedia',
+        ]);
+        $otherCoffee = Menu::create([
+            'nama_menu' => 'Menu Kasir Lain',
+            'kategori' => 'kopi',
+            'harga' => 30000,
+            'status_ketersediaan' => 'tersedia',
+        ]);
+        $today = CarbonImmutable::parse('2026-10-03 10:00:00', 'Asia/Jakarta');
+
+        $transaction = Transaksi::create([
+            'user_id' => $cashier->id,
+            'tanggal' => $today,
+            'total_harga' => 48400,
+            'metode_pembayaran' => 'qris',
+        ]);
+        $otherTransaction = Transaksi::create([
+            'user_id' => $otherCashier->id,
+            'tanggal' => $today,
+            'total_harga' => 330000,
+            'metode_pembayaran' => 'cash',
+        ]);
+
+        DetailTransaksi::create([
+            'transaksi_id' => $transaction->id,
+            'menu_id' => $coffee->id,
+            'jumlah' => 2,
+            'subtotal' => 44000,
+        ]);
+        DetailTransaksi::create([
+            'transaksi_id' => $otherTransaction->id,
+            'menu_id' => $otherCoffee->id,
+            'jumlah' => 10,
+            'subtotal' => 300000,
+        ]);
+
+        $this->travelTo($today);
+
+        $this->actingAs($cashier)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('Periode: 03 Oktober 2026')
+            ->assertSee('Rp 48.400')
+            ->assertSee('Kopi Susu')
+            ->assertSee('2 Cup Terjual')
+            ->assertSee('Rp 44.000')
+            ->assertDontSee('Menu Kasir Lain')
+            ->assertDontSee('Rp 330.000');
+    }
+
     public function test_dashboard_chart_includes_sales_outside_regular_business_hours(): void
     {
         $cashier = User::factory()->create();

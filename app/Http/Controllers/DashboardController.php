@@ -40,7 +40,8 @@ class DashboardController extends Controller
 
         return view('dashboard', [
             'user' => $user,
-            'totalPenjualanHariIni' => (int) $transactions->sum('total_harga'),
+            'periodLabel' => $today->copy()->locale('id')->translatedFormat('d F Y'),
+            'totalPenjualanHariIni' => Transaksi::totalPenjualanHariIni($today, $user->id),
             'totalTransactions' => $totalTransactions,
             'dailyTarget' => $dailyTarget,
             'targetPercentage' => min(100, (int) round(($totalTransactions / $dailyTarget) * 100)),

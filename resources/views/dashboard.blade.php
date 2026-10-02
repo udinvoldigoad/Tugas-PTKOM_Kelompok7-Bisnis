@@ -8,6 +8,7 @@
                     <div>
                         <h1 class="text-2xl font-bold tracking-wide text-[#171410] sm:text-3xl">Dashboard</h1>
                         <p class="mt-1 text-[11px] tracking-wide text-[#4D4943] sm:text-xs">Performa Penjualan Kasir</p>
+                        <p class="mt-1 text-[10px] text-[#756D64] sm:text-[11px]">Periode: {{ $periodLabel }}</p>
                     </div>
 
                     <a href="{{ route('profile.edit') }}" class="flex min-w-[210px] items-center gap-3 rounded-full bg-[#E7E6E4] px-3 py-1.5 transition hover:bg-[#DDDAD6] focus:outline-none focus:ring-2 focus:ring-[#9B7B3F] focus:ring-offset-2">
@@ -45,14 +46,16 @@
 
                         <article class="rounded-[18px] bg-[#F0E9E1] p-4 sm:p-5">
                             @if ($busiestHour)
-                                <div class="flex h-[250px] items-end gap-2 border-b-2 border-l-2 border-[#514A43] px-2 pt-6 sm:gap-3 sm:px-4" aria-label="Grafik jumlah cup terjual per jam">
-                                    @foreach ($hourlySales as $sale)
-                                        <div class="group relative flex h-full min-w-0 flex-1 items-end justify-center">
-                                            <span class="absolute bottom-[calc(var(--bar-height)+8px)] hidden whitespace-nowrap rounded bg-[#332E29] px-2 py-1 text-[9px] text-white group-hover:block group-focus-within:block">{{ $sale['cups'] }} cup</span>
-                                            <div tabindex="0" class="w-full max-w-7 rounded-t-full bg-[#A84142] outline-none ring-[#9B7B3F] focus:ring-2" style="--bar-height: {{ $sale['cups'] > 0 ? max(6, ($sale['cups'] / $chartMaximum) * 88) : 0 }}%; height: var(--bar-height)" aria-label="{{ $sale['hour'] }}, {{ $sale['cups'] }} cup"></div>
-                                            <span class="absolute -bottom-6 text-[8px] text-[#765F36] sm:text-[9px]">{{ substr($sale['hour'], 0, 2) }}</span>
-                                        </div>
-                                    @endforeach
+                                <div class="overflow-x-auto pb-2">
+                                    <div class="flex h-[250px] min-w-[620px] items-end gap-2 border-b-2 border-l-2 border-[#514A43] px-2 pt-6 sm:gap-3 sm:px-4" aria-label="Grafik jumlah cup terjual per jam">
+                                        @foreach ($hourlySales as $sale)
+                                            <div class="group relative flex h-full min-w-0 flex-1 items-end justify-center">
+                                                <span class="absolute bottom-[calc(var(--bar-height)+8px)] hidden whitespace-nowrap rounded bg-[#332E29] px-2 py-1 text-[9px] text-white group-hover:block group-focus-within:block">{{ $sale['cups'] }} cup</span>
+                                                <div tabindex="0" class="w-full max-w-7 rounded-t-full bg-[#A84142] outline-none ring-[#9B7B3F] focus:ring-2" style="--bar-height: {{ $sale['cups'] > 0 ? max(6, ($sale['cups'] / $chartMaximum) * 88) : 0 }}%; height: var(--bar-height)" aria-label="{{ $sale['hour'] }}, {{ $sale['cups'] }} cup"></div>
+                                                <span class="absolute -bottom-6 text-[8px] text-[#765F36] sm:text-[9px]">{{ substr($sale['hour'], 0, 2) }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 </div>
                                 <div class="mt-8 rounded-[14px] bg-[#E5D1A5] px-4 py-3 text-center text-xs font-bold sm:text-sm">
                                     Jam Paling Sibuk: {{ $busiestHour['hour'] }} - {{ sprintf('%02d:00', (int) substr($busiestHour['hour'], 0, 2) + 1) }} ({{ $busiestHour['cups'] }} Cup)
@@ -70,7 +73,7 @@
 
                     <aside class="rounded-[18px] bg-[#F0E9E1] p-4 sm:p-5" aria-labelledby="best-seller-title">
                         <h2 id="best-seller-title" class="text-xl font-bold text-[#171410]">Menu Terlaris</h2>
-                        <p class="mt-1 text-xs text-[#4D4943]">Berdasarkan Penjualan Hari Ini</p>
+                        <p class="mt-1 text-xs text-[#4D4943]">Berdasarkan penjualan {{ $periodLabel }}</p>
 
                         @if ($menuTerlarisHariIni->isNotEmpty())
                             @php($highestSales = max(1, (int) $menuTerlarisHariIni->max('total_terjual')))
