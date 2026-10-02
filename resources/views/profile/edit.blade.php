@@ -25,22 +25,7 @@
                             </p>
                         </div>
 
-                        <!-- User Profile Pill (Top Right) -->
-                        <div class="min-w-[194px] bg-[#EAE8E2] rounded-full py-1 px-3 flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-[#5D4E43] flex items-center justify-center text-white font-bold text-xs shrink-0 overflow-hidden">
-                                @if($user->avatar)
-                                    <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
-                                @else
-                                    <svg class="w-5 h-5 text-white/90" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                                    </svg>
-                                @endif
-                            </div>
-                            <div class="flex flex-col leading-tight">
-                                <span class="font-bold text-xs sm:text-sm text-[#1E1B18] font-mono">{{ $user->name ?? 'Irfan' }}</span>
-                                <span class="text-[11px] font-mono text-[#524F49]">{{ $user->role ?? 'Kasir' }} Shift {{ $user->shift ?? '1' }}</span>
-                            </div>
-                        </div>
+                        <x-user-summary-chip :user="$user" />
                     </header>
 
                     <!-- Alert Notification (If Saved) -->
@@ -326,7 +311,7 @@
                                     <h4 class="text-sm font-bold font-mono text-[#1E1B18]">Akun &amp; Akses</h4>
                                     <p class="text-[11px] font-mono text-[#66635C] mt-0.5 mb-3">Ringkasan akses pengguna saat ini</p>
 
-                                    <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 gap-2 mt-auto">
+                                    <div class="mt-auto grid grid-cols-1 gap-2 sm:grid-cols-3">
                                         <div class="rounded-lg bg-[#F4F2ED] px-3 py-2.5">
                                             <span class="block text-[10px] font-mono text-[#78756F] mb-1">Peran</span>
                                             <strong class="block text-xs font-mono text-[#1E1B18]">{{ $user->role ?? 'Kasir' }}</strong>
@@ -336,26 +321,9 @@
                                             <strong class="block text-xs font-mono text-[#1E1B18]">Shift {{ $user->shift ?? '1' }}</strong>
                                         </div>
                                         <div class="rounded-lg bg-[#F4F2ED] px-3 py-2.5">
-                                            <span class="block text-[10px] font-mono text-[#78756F] mb-1">Status Akun</span>
-                                            <strong class="block text-xs font-mono text-[#287E36]">
-                                                Aktif
-                                            </strong>
-                                        </div>
-                                        <div class="rounded-lg bg-[#F4F2ED] px-3 py-2.5">
                                             <span class="block text-[10px] font-mono text-[#78756F] mb-1">Penjualan Hari Ini</span>
                                             <strong class="block text-xs font-mono text-[#1E1B18]">
                                                 Rp {{ number_format($totalPenjualanHariIni ?? 0, 0, ',', '.') }}
-                                            </strong>
-                                        </div>
-                                        <div class="rounded-lg bg-[#F4F2ED] px-3 py-2.5">
-                                            <span class="block text-[10px] font-mono text-[#78756F] mb-1">Menu Terlaris Hari Ini</span>
-                                            <strong class="block text-xs font-mono text-[#1E1B18]">
-                                                @if(($menuTerlarisHariIni ?? collect())->isNotEmpty())
-                                                    {{ $menuTerlarisHariIni->first()->nama_menu }}
-                                                    <span class="font-normal text-[#78756F]">({{ $menuTerlarisHariIni->first()->total_terjual }} item)</span>
-                                                @else
-                                                    Belum ada penjualan
-                                                @endif
                                             </strong>
                                         </div>
                                     </div>

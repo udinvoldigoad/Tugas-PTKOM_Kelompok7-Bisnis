@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/kasir/transaksi', [TransaksiController::class, 'store'])->name('transactions.store');
 
     Route::get('/riwayat', [TransaksiController::class, 'index'])->name('transactions.index');
+    Route::get('/riwayat/export', [TransaksiController::class, 'export'])->name('transactions.export');
     Route::get('/riwayat/{transaksi}', [TransaksiController::class, 'show'])->name('transactions.show');
 
     Route::get('/kelola-menu', [MenuController::class, 'index'])->name('menu.index');

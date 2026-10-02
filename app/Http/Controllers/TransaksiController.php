@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\Transaksi;
 use App\Models\User;
+use App\Services\TransactionExportService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -12,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TransaksiController extends Controller
 {
@@ -19,6 +22,43 @@ class TransaksiController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request): View
+    {
+        $query = $this->historyQuery($request);
+
+        $transaksis = $query->paginate(10)->withQueryString();
+        $cashiers = User::query()
+            ->whereIn('id', Transaksi::query()->select('user_id'))
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return view('riwayat.index', compact('transaksis', 'cashiers'));
+    }
+
+    public function export(Request $request, TransactionExportService $exportService): BinaryFileResponse|View
+    {
+        $validated = $request->validate([
+            'format' => ['required', 'in:xlsx,pdf'],
+            'range' => ['required', 'in:page,all'],
+        ]);
+        $query = $this->historyQuery($request);
+        $transactions = $validated['range'] === 'page'
+            ? $query->forPage(max(1, $request->integer('page')), 10)->get()
+            : $query->get();
+
+        if ($validated['format'] === 'pdf') {
+            return view('riwayat.export-pdf', compact('transactions'));
+        }
+
+        $path = $exportService->createXlsx($transactions);
+
+        return response()->download(
+            $path,
+            'riwayat-transaksi-'.now()->format('Ymd-His').'.xlsx',
+            ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+        )->deleteFileAfterSend();
+    }
+
+    private function historyQuery(Request $request): Builder
     {
         $query = Transaksi::query()->riwayatTerbaru();
         $search = trim((string) $request->query('q', ''));
@@ -59,13 +99,7 @@ class TransaksiController extends Controller
             default => null,
         };
 
-        $transaksis = $query->paginate(10)->withQueryString();
-        $cashiers = User::query()
-            ->whereIn('id', Transaksi::query()->select('user_id'))
-            ->orderBy('name')
-            ->get(['id', 'name']);
-
-        return view('riwayat.index', compact('transaksis', 'cashiers'));
+        return $query;
     }
 
     /**

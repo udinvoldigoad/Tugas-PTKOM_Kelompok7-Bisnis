@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
-use App\Models\DetailTransaksi;
 use App\Models\Transaksi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,7 +21,6 @@ class ProfileController extends Controller
         return view('profile.edit', [
             'user' => $request->user(),
             'totalPenjualanHariIni' => Transaksi::totalPenjualanHariIni(userId: $request->user()->id),
-            'menuTerlarisHariIni' => DetailTransaksi::menuTerlarisHariIni(userId: $request->user()->id),
         ]);
     }
 

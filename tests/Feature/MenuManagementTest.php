@@ -15,11 +15,13 @@ class MenuManagementTest extends TestCase
 
     public function test_authenticated_user_can_view_the_menu_management_page(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['name' => 'Udin Kasir']);
         $menu = $this->createMenu(['nama_menu' => 'Kopi Tubruk']);
 
         $this->actingAs($user)->get(route('menu.index'))
             ->assertOk()
+            ->assertSee('Udin Kasir')
+            ->assertDontSee('Niken')
             ->assertViewHas('menus', fn ($menus): bool => $menus->contains($menu));
     }
 

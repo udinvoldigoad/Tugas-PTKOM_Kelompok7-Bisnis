@@ -56,13 +56,7 @@
           <p class="text-xs md:text-sm font-semibold text-[#1A1208]/80 mt-0.5">Silahkan Pilih Menu yang Anda Inginkan</p>
         </div>
 
-        <div class="flex items-center gap-3 bg-[#E6DDD0] px-4 py-1.5 rounded-full shrink-0">
-          <div class="w-8 h-8 rounded-full bg-[#8C7A6B] flex items-center justify-center text-white text-xs font-bold">N</div>
-          <div class="text-xs leading-tight">
-            <p class="font-bold text-[#1A1208]">Niken</p>
-            <p class="text-[#1A1208]/70 font-medium">Kasir Shift 1</p>
-          </div>
-        </div>
+        <x-user-summary-chip class="shrink-0" />
       </div>
 
       <!-- Area Layout Utama -->

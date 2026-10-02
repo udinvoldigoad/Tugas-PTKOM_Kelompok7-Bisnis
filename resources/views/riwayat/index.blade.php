@@ -27,6 +27,14 @@
          x-data="historyPage(@js($historyPayload))">
         <x-profile-sidebar active="riwayat" />
 
+        <div x-show="toastVisible" x-transition.opacity.duration.200ms x-cloak
+            class="fixed right-4 top-4 z-[70] flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-xs font-bold text-green-800 shadow-lg"
+            role="status" aria-live="polite">
+            <span class="grid h-5 w-5 place-items-center rounded-full bg-green-600 text-white">✓</span>
+            <span>Struk berhasil dicetak.</span>
+            <button type="button" @click="toastVisible = false" class="text-base leading-none opacity-60 hover:opacity-100" aria-label="Tutup pesan">&times;</button>
+        </div>
+
         <main class="min-w-0 flex-1 overflow-x-hidden bg-[#FAF9F5] px-4 py-5 sm:px-7 lg:px-9 lg:py-7">
             <div class="mx-auto max-w-[1380px]">
                 <header class="mb-5 flex items-center justify-between gap-4">
@@ -34,15 +42,7 @@
                         <h1 class="text-2xl font-bold tracking-wide text-[#1E1B18] sm:text-3xl">Riwayat</h1>
                         <p class="mt-1 text-[11px] text-[#5F5A52] sm:text-xs">Laporan Penjualan / Riwayat transaksi</p>
                     </div>
-                    <div class="flex items-center gap-2 rounded-full bg-[#ECE9E3] px-3 py-2 sm:min-w-[170px]">
-                        <span class="grid h-7 w-7 place-items-center rounded-full bg-[#77635A] text-[10px] font-bold text-white">
-                            {{ strtoupper(substr(auth()->user()->name ?? 'K', 0, 1)) }}
-                        </span>
-                        <span class="hidden min-w-0 sm:block">
-                            <strong class="block truncate text-[11px] text-[#1E1B18]">{{ auth()->user()->name }}</strong>
-                            <small class="block text-[9px] text-[#625D56]">{{ auth()->user()->role ?? 'Kasir' }} Shift {{ auth()->user()->shift ?? '1' }}</small>
-                        </span>
-                    </div>
+                    <x-user-summary-chip />
                 </header>
 
                 <form method="GET" action="{{ route('transactions.index') }}" class="mb-5 rounded-2xl bg-[#EFE7DD] p-3 shadow-sm sm:p-4">
@@ -351,14 +351,10 @@
                             </aside>
                         </div>
                         <div class="flex flex-wrap justify-end gap-3 px-8 pb-6 pt-1">
-                            <button @click="window.print()" class="inline-flex items-center gap-2 rounded-md border border-[#D8D0C6] bg-white px-5 py-2 text-[11px] font-bold text-[#2C2721]">
+                            <button type="button" @click="printReceipt()" class="inline-flex items-center gap-2 rounded-md border border-[#D8D0C6] bg-white px-5 py-2 text-[11px] font-bold text-[#2C2721]">
                                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9V3h12v6M6 17H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6v-7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
                                 Cetak Struk
                             </button>
-                            <a :href="selected.url" class="inline-flex items-center gap-2 rounded-md border border-[#D8D0C6] bg-white px-5 py-2 text-[11px] font-bold text-[#2C2721]">
-                                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12M8 11l4 4 4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                Download PDF
-                            </a>
                             <button @click="detailOpen = false" class="rounded-md bg-[#B5955D] px-8 py-2 text-[11px] font-bold text-white">Tutup</button>
                         </div>
                     </div>
@@ -372,6 +368,13 @@
                     <h2 class="text-base font-bold">Export Riwayat Transaksi</h2>
                     <p class="mt-2 text-[11px] text-[#6F675F]">Pilih format file dan rentang data yang ingin diekspor</p>
                 </div>
+
+                <form method="GET" action="{{ route('transactions.export') }}" target="_blank" @submit="exportOpen = false">
+                    @foreach (['q', 'payment', 'cashier', 'period', 'date_from', 'date_to', 'page'] as $filter)
+                        @if (request()->filled($filter))
+                            <input type="hidden" name="{{ $filter }}" value="{{ request($filter) }}">
+                        @endif
+                    @endforeach
 
                 <div class="mt-5">
                     <p class="mb-2 text-[10px] font-bold text-[#2C2721]">Format File</p>
@@ -388,7 +391,7 @@
                                 <strong class="block text-[11px]">Excel (XLSX)</strong>
                                 <span class="block text-[8px] leading-tight text-[#6F675F]">Cocok untuk olah data lebih lanjut</span>
                             </span>
-                            <input type="radio" name="export_format_preview" class="absolute right-2 top-2 h-3 w-3 border-[#D8D0C6] text-[#B5955D] focus:ring-[#B5955D]" checked>
+                            <input type="radio" name="format" value="xlsx" x-model="exportFormat" class="absolute right-2 top-2 h-3 w-3 border-[#D8D0C6] text-[#B5955D] focus:ring-[#B5955D]">
                         </label>
                         <label class="relative flex min-h-[64px] cursor-pointer items-center gap-3 rounded-md border border-[#D8D0C6] bg-white p-3">
                             <span class="grid h-8 w-8 shrink-0 place-items-center rounded bg-[#EF4E47] text-white shadow-sm">
@@ -401,7 +404,7 @@
                                 <strong class="block text-[11px]">PDF</strong>
                                 <span class="block text-[8px] leading-tight text-[#6F675F]">Siap untuk dicetak</span>
                             </span>
-                            <input type="radio" name="export_format_preview" class="absolute right-2 top-2 h-3 w-3 border-[#D8D0C6] text-[#B5955D] focus:ring-[#B5955D]">
+                            <input type="radio" name="format" value="pdf" x-model="exportFormat" class="absolute right-2 top-2 h-3 w-3 border-[#D8D0C6] text-[#B5955D] focus:ring-[#B5955D]">
                         </label>
                     </div>
                 </div>
@@ -409,11 +412,11 @@
                 <div class="mt-4">
                     <p class="mb-2 text-[10px] font-bold text-[#2C2721]">Rentang Data</p>
                     <label class="flex items-center gap-2 text-[10px] text-[#2C2721]">
-                        <input type="radio" name="export_range_preview" class="h-3.5 w-3.5 border-[#D8D0C6] text-[#B5955D] focus:ring-[#B5955D]">
+                        <input type="radio" name="range" value="page" x-model="exportRange" class="h-3.5 w-3.5 border-[#D8D0C6] text-[#B5955D] focus:ring-[#B5955D]">
                         <span>Data yang sedang ditampilkan ({{ $transaksis->count() }} transaksi)</span>
                     </label>
                     <label class="mt-2 flex items-center gap-2 text-[10px] text-[#2C2721]">
-                        <input type="radio" name="export_range_preview" class="h-3.5 w-3.5 border-[#D8D0C6] text-[#B5955D] focus:ring-[#B5955D]">
+                        <input type="radio" name="range" value="all" x-model="exportRange" class="h-3.5 w-3.5 border-[#D8D0C6] text-[#B5955D] focus:ring-[#B5955D]">
                         <span>Semua data sesuai filter ({{ $transaksis->total() }} transaksi)</span>
                     </label>
                 </div>
@@ -425,11 +428,12 @@
 
                 <div class="mt-4 flex justify-end gap-3">
                     <button @click="exportOpen = false" class="rounded-md border border-[#D8D0C6] bg-white px-6 py-2 text-[10px] font-bold text-[#2C2721]">Batal</button>
-                    <button type="button" class="inline-flex items-center gap-2 rounded-md bg-[#B5955D] px-6 py-2 text-[10px] font-bold text-white">
+                    <button type="submit" class="inline-flex items-center gap-2 rounded-md bg-[#B5955D] px-6 py-2 text-[10px] font-bold text-white">
                         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v12M8 11l4 4 4-4M5 21h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         Export
                     </button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
@@ -440,10 +444,22 @@
                 transactions,
                 detailOpen: false,
                 exportOpen: false,
+                exportFormat: 'xlsx',
+                exportRange: 'all',
+                toastVisible: false,
+                toastTimer: null,
                 selected: null,
                 openDetail(id) {
                     this.selected = this.transactions.find((transaction) => transaction.id === id);
                     this.detailOpen = Boolean(this.selected);
+                },
+                printReceipt() {
+                    this.detailOpen = false;
+                    this.toastVisible = true;
+                    window.clearTimeout(this.toastTimer);
+                    this.toastTimer = window.setTimeout(() => {
+                        this.toastVisible = false;
+                    }, 3000);
                 },
                 rupiah(value) {
                     return `Rp ${Number(value || 0).toLocaleString('id-ID')}`;

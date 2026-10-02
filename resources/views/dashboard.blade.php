@@ -11,19 +11,7 @@
                         <p class="mt-1 text-[10px] text-[#756D64] sm:text-[11px]">Periode: {{ $periodLabel }}</p>
                     </div>
 
-                    <a href="{{ route('profile.edit') }}" class="flex min-w-[210px] items-center gap-3 rounded-full bg-[#E7E6E4] px-3 py-1.5 transition hover:bg-[#DDDAD6] focus:outline-none focus:ring-2 focus:ring-[#9B7B3F] focus:ring-offset-2">
-                        <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#79615D] text-white">
-                            @if ($user->avatar)
-                                <img src="{{ asset('storage/'.$user->avatar) }}" alt="{{ $user->name }}" class="h-full w-full object-cover">
-                            @else
-                                <span class="text-sm font-bold">{{ str($user->name)->substr(0, 1)->upper() }}</span>
-                            @endif
-                        </div>
-                        <span class="leading-tight">
-                            <strong class="block text-sm text-[#171410]">{{ $user->name }}</strong>
-                            <small class="block text-[10px] text-[#3F3A35]">{{ $user->role ?? 'Kasir' }} Shift {{ $user->shift ?? '1' }}</small>
-                        </span>
-                    </a>
+                    <x-user-summary-chip :user="$user" />
                 </header>
 
                 <div class="grid gap-4 xl:grid-cols-[minmax(0,1.8fr)_minmax(310px,1fr)]">
