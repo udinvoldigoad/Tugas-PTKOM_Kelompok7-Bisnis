@@ -98,9 +98,9 @@
         <div class="w-full lg:w-80 flex flex-col gap-4 shrink-0">
           
           <!-- Input Cari -->
-          <div class="relative w-full shrink-0">
-            <input type="text" id="search-input" oninput="renderProducts()" placeholder="Cari..." class="w-full bg-[#D8C29D] text-[#1A1208] placeholder-[#1A1208]/60 pl-4 pr-10 py-2.5 rounded-xl text-xs font-medium focus:outline-none">
-            <button onclick="renderProducts()" class="absolute right-0 top-0 bottom-0 w-10 bg-[#E06328] hover:bg-[#c9521c] rounded-r-xl flex items-center justify-center text-white transition">
+          <div class="flex w-full shrink-0 overflow-hidden rounded-xl bg-[#D8C29D] focus-within:ring-2 focus-within:ring-inset focus-within:ring-blue-600">
+            <input type="text" id="search-input" oninput="renderProducts()" placeholder="Cari..." class="min-w-0 flex-1 bg-transparent py-2.5 pl-4 pr-3 text-xs font-medium text-[#1A1208] placeholder-[#1A1208]/60 outline-none ring-0 focus:outline-none focus:ring-0">
+            <button type="button" onclick="renderProducts()" class="flex w-10 shrink-0 items-center justify-center bg-[#E06328] text-white transition hover:bg-[#c9521c]">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
               </svg>
@@ -223,7 +223,7 @@
         </div>
         <div>
           <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Harga (Rp)</label>
-          <input type="number" id="add-price" placeholder="22000" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-2 rounded-lg text-xs focus:outline-none">
+          <input type="text" id="add-price" inputmode="numeric" placeholder="22.000" oninput="formatPriceInput(this)" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-2 rounded-lg text-xs focus:outline-none">
         </div>
       </div>
 
@@ -322,7 +322,7 @@
         </div>
         <div>
           <label class="block text-xs font-extrabold font-heading text-[#1A1208] mb-1">Harga (Rp)</label>
-          <input type="number" id="edit-price" min="1" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-1.5 rounded-lg text-xs focus:outline-none">
+          <input type="text" id="edit-price" inputmode="numeric" oninput="formatPriceInput(this)" class="w-full bg-[#D9D9D9] text-[#1A1208] font-bold px-3 py-1.5 rounded-lg text-xs focus:outline-none">
         </div>
       </div>
 
@@ -531,9 +531,10 @@
       });
 
       const sortedProducts = [...filtered].sort((a, b) => {
-        if (a.status === 'archive' && b.status !== 'archive') return 1;
-        if (a.status !== 'archive' && b.status === 'archive') return -1;
-        return 0;
+        const statusOrder = { instock: 0, out: 1, archive: 2 };
+        const statusDifference = (statusOrder[a.status] ?? 1) - (statusOrder[b.status] ?? 1);
+
+        return statusDifference || a.name.localeCompare(b.name, 'id');
       });
 
       if (sortedProducts.length === 0) {
@@ -673,9 +674,18 @@
       document.getElementById('addMenuModal').classList.add('hidden');
     }
 
+    function priceInputValue(value) {
+      return Number(String(value).replace(/\D/g, '')) || 0;
+    }
+
+    function formatPriceInput(input) {
+      const price = priceInputValue(input.value);
+      input.value = price > 0 ? new Intl.NumberFormat('id-ID').format(price) : '';
+    }
+
     async function saveNewMenu() {
       const name = document.getElementById('add-name').value.trim();
-      const price = parseInt(document.getElementById('add-price').value) || 0;
+      const price = priceInputValue(document.getElementById('add-price').value);
       const category = document.getElementById('add-category').value;
 
       if (!name || price <= 0) {
@@ -714,7 +724,7 @@
       removeCurrentPhoto = false;
       document.getElementById('edit-name').value = p.name;
       document.getElementById('edit-category').value = p.category || 'Kopi';
-      document.getElementById('edit-price').value = p.price;
+      document.getElementById('edit-price').value = new Intl.NumberFormat('id-ID').format(p.price);
       document.getElementById('edit-photo').value = '';
       updatePhotoPreview(p.photoUrl, p.name);
 
@@ -778,7 +788,7 @@
       formData.append('_method', 'PATCH');
       formData.append('nama_menu', document.getElementById('edit-name').value.trim());
       formData.append('kategori', document.getElementById('edit-category').value);
-      formData.append('harga', document.getElementById('edit-price').value);
+      formData.append('harga', priceInputValue(document.getElementById('edit-price').value));
       formData.append('status_ketersediaan', selectedStatus === 'instock' ? 'tersedia' : 'habis');
       if (removeCurrentPhoto) formData.append('hapus_foto', '1');
 

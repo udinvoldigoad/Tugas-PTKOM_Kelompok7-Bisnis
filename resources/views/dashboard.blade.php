@@ -46,8 +46,8 @@
 
                         <article class="rounded-[18px] bg-[#F0E9E1] p-4 sm:p-5">
                             @if ($busiestHour)
-                                <div class="overflow-x-auto pb-2">
-                                    <div class="flex h-[250px] min-w-[620px] items-end gap-2 border-b-2 border-l-2 border-[#514A43] px-2 pt-6 sm:gap-3 sm:px-4" aria-label="Grafik jumlah cup terjual per jam">
+                                <div class="pb-2">
+                                    <div class="flex h-[250px] w-full items-end gap-1 border-b-2 border-l-2 border-[#514A43] px-2 pt-6 sm:gap-2 sm:px-4" aria-label="Grafik jumlah cup terjual per jam">
                                         @foreach ($hourlySales as $sale)
                                             <div class="group relative flex h-full min-w-0 flex-1 items-end justify-center">
                                                 <span class="absolute bottom-[calc(var(--bar-height)+8px)] hidden whitespace-nowrap rounded bg-[#332E29] px-2 py-1 text-[9px] text-white group-hover:block group-focus-within:block">{{ $sale['cups'] }} cup</span>

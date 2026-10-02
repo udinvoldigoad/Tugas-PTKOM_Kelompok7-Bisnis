@@ -15,7 +15,10 @@ class MenuController extends Controller
     public function index(): View
     {
         return view('menu.index', [
-            'menus' => Menu::query()->orderBy('nama_menu')->get(),
+            'menus' => Menu::query()
+                ->orderByRaw("CASE WHEN status_ketersediaan = 'habis' THEN 1 ELSE 0 END")
+                ->orderBy('nama_menu')
+                ->get(),
             'cart' => session()->get('cart', []),
         ]);
     }

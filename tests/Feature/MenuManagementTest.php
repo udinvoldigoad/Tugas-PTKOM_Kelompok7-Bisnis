@@ -23,6 +23,25 @@ class MenuManagementTest extends TestCase
             ->assertViewHas('menus', fn ($menus): bool => $menus->contains($menu));
     }
 
+    public function test_unavailable_menus_are_listed_after_available_menus(): void
+    {
+        $user = User::factory()->create();
+        $unavailableMenu = $this->createMenu([
+            'nama_menu' => 'Americano Habis',
+            'status_ketersediaan' => 'habis',
+        ]);
+        $availableMenu = $this->createMenu([
+            'nama_menu' => 'Zuppa Soup',
+            'status_ketersediaan' => 'tersedia',
+        ]);
+
+        $this->actingAs($user)->get(route('menu.index'))
+            ->assertOk()
+            ->assertViewHas('menus', function ($menus) use ($availableMenu, $unavailableMenu): bool {
+                return $menus->pluck('id')->all() === [$availableMenu->id, $unavailableMenu->id];
+            });
+    }
+
     public function test_guest_cannot_manage_menus(): void
     {
         $menu = $this->createMenu();
