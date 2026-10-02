@@ -11,7 +11,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Transaksi extends Model
 {
     // Mengizinkan kolom diisi secara massal
-    protected $fillable = ['user_id', 'tanggal', 'total_harga', 'metode_pembayaran'];
+    protected $fillable = [
+        'user_id',
+        'idempotency_key',
+        'tanggal',
+        'total_harga',
+        'metode_pembayaran',
+    ];
 
     // Relasi One-to-Many ke DetailTransaksi
     public function detailTransaksi(): HasMany

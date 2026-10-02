@@ -67,7 +67,9 @@ class TransactionHistoryQueryTest extends TestCase
         DetailTransaksi::create([
             'transaksi_id' => $transaction->id,
             'menu_id' => $menu->id,
+            'nama_menu' => 'Kopi Susu',
             'jumlah' => 2,
+            'harga_satuan' => 22000,
             'subtotal' => 44000,
         ]);
 
@@ -82,11 +84,20 @@ class TransactionHistoryQueryTest extends TestCase
         $detail = $history->detailTransaksi->sole();
 
         $this->assertSame(48400, $history->total_harga);
+        $this->assertSame('Kopi Susu', $detail->nama_menu);
         $this->assertSame(2, $detail->jumlah);
+        $this->assertSame(22000, (int) $detail->harga_satuan);
         $this->assertSame(44000, $detail->subtotal);
         $this->assertSame(22000, intdiv((int) $detail->subtotal, $detail->jumlah));
         $this->assertSame(99000, $detail->menu->harga);
         $this->assertTrue($detail->menu->trashed());
+
+        $this->actingAs($cashier)
+            ->get(route('transactions.show', $transaction))
+            ->assertOk()
+            ->assertSee('Kopi Susu')
+            ->assertSee('Rp 22.000')
+            ->assertDontSee('Kopi Susu Premium');
     }
 
     private function createTransaction(User $cashier, CarbonInterface $date): Transaksi

@@ -400,6 +400,7 @@
     let lastDeletedItem = null;
     let removeCurrentPhoto = false;
     let selectedPaymentMethod = 'cash';
+    let checkoutIdempotencyKey = null;
     
     // VARIABEL FILTER KATEGORI TERPILIH
     let currentCategoryFilter = 'Semua';
@@ -617,6 +618,17 @@
       processButton.textContent = 'Cetak Struk';
     }
 
+    function createIdempotencyKey() {
+      if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, character => {
+        const random = window.crypto.getRandomValues(new Uint8Array(1))[0] & 15;
+        const value = character === 'x' ? random : (random & 3) | 8;
+
+        return value.toString(16);
+      });
+    }
+
     async function processPayment() {
       if (cart.length === 0) return;
       const processButton = document.getElementById('process-transaction-button');
@@ -624,12 +636,17 @@
 
       processButton.disabled = true;
       processButton.textContent = 'Menyimpan...';
+      checkoutIdempotencyKey ??= createIdempotencyKey();
 
       try {
         const payload = await sendCartRequest(transactionStoreUrl, {
           method: 'POST',
-          body: JSON.stringify({ metode_pembayaran: selectedPaymentMethod }),
+          body: JSON.stringify({
+            metode_pembayaran: selectedPaymentMethod,
+            idempotency_key: checkoutIdempotencyKey,
+          }),
         });
+        checkoutIdempotencyKey = null;
         cart = [];
         noteEditorItemId = null;
         hidePaymentSection();

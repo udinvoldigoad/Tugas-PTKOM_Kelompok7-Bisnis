@@ -63,6 +63,17 @@ class SalesSummaryTest extends TestCase
             ->assertSee('Rp 24.200');
     }
 
+    public function test_dashboard_uses_configured_daily_transaction_target(): void
+    {
+        config()->set('sales.daily_transaction_target', 25);
+        $cashier = User::factory()->create();
+
+        $this->actingAs($cashier)
+            ->get(route('dashboard'))
+            ->assertOk()
+            ->assertSee('/ 25');
+    }
+
     public function test_dashboard_connects_sales_total_and_best_seller_list_to_cashier_data(): void
     {
         $cashier = User::factory()->create();

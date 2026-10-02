@@ -35,7 +35,7 @@ class DashboardController extends Controller
             'cups' => (int) $salesByHour->get($hour, 0),
         ]);
         $busiestHour = $hourlySales->sortByDesc('cups')->first();
-        $dailyTarget = 120;
+        $dailyTarget = (int) config('sales.daily_transaction_target');
         $totalTransactions = $transactions->count();
 
         return view('dashboard', [

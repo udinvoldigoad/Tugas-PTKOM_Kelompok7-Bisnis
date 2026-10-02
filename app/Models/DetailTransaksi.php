@@ -10,7 +10,14 @@ use Illuminate\Support\Collection;
 class DetailTransaksi extends Model
 {
     // Memastikan subtotal (harga saat transaksi) dan menu_id bisa disimpan
-    protected $fillable = ['transaksi_id', 'menu_id', 'jumlah', 'subtotal'];
+    protected $fillable = [
+        'transaksi_id',
+        'menu_id',
+        'nama_menu',
+        'jumlah',
+        'harga_satuan',
+        'subtotal',
+    ];
 
     // Relasi Belongs-To ke Transaksi
     public function transaksi(): BelongsTo

@@ -70,6 +70,29 @@ class CartControllerTest extends TestCase
             ->assertJsonValidationErrors('jumlah');
     }
 
+    public function test_cart_page_provides_payment_method_and_idempotency_key(): void
+    {
+        $user = User::factory()->create();
+        $menu = $this->createMenu();
+
+        $this->actingAs($user)
+            ->withSession([
+                'cart' => [
+                    $menu->id => [
+                        'id_menu' => $menu->id,
+                        'nama_menu' => $menu->nama_menu,
+                        'jumlah' => 1,
+                        'harga' => $menu->harga,
+                        'subtotal' => $menu->harga,
+                    ],
+                ],
+            ])
+            ->get(route('cart.index'))
+            ->assertOk()
+            ->assertSee('name="metode_pembayaran"', escape: false)
+            ->assertSee('name="idempotency_key"', escape: false);
+    }
+
     /**
      * @param  array<string, mixed>  $attributes
      */

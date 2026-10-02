@@ -82,6 +82,12 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
+        if ($user->transaksis()->exists()) {
+            return redirect()->back()->withErrors([
+                'password' => 'Akun yang memiliki riwayat transaksi tidak dapat dihapus.',
+            ], 'userDeletion');
+        }
+
         Auth::logout();
 
         $user->delete();

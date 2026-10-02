@@ -13,9 +13,9 @@
             'total' => (int) $transaksi->total_harga,
             'url' => route('transactions.show', $transaksi),
             'items' => $transaksi->detailTransaksi->map(fn ($detail) => [
-                'name' => $detail->menu?->nama_menu ?? 'Menu terhapus',
+                'name' => $detail->nama_menu ?? $detail->menu?->nama_menu ?? 'Menu terhapus',
                 'quantity' => (int) $detail->jumlah,
-                'price' => $detail->jumlah > 0 ? intdiv((int) $detail->subtotal, (int) $detail->jumlah) : 0,
+                'price' => (int) ($detail->harga_satuan ?? ($detail->jumlah > 0 ? intdiv((int) $detail->subtotal, (int) $detail->jumlah) : 0)),
                 'subtotal' => (int) $detail->subtotal,
             ])->values(),
         ];

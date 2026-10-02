@@ -98,6 +98,12 @@
                             </dl>
                             <form id="transaction-form" method="POST" action="{{ route('transactions.store') }}" class="mt-6">
                                 @csrf
+                                <input type="hidden" name="idempotency_key" value="{{ (string) \Illuminate\Support\Str::uuid() }}">
+                                <label for="metode-pembayaran" class="mb-2 block text-xs font-bold">Metode pembayaran</label>
+                                <select id="metode-pembayaran" name="metode_pembayaran" required class="mb-4 w-full rounded-xl border-[#c7ad89] bg-white px-3 py-2.5 text-sm font-bold focus:border-[#e06328] focus:ring-[#e06328]">
+                                    <option value="cash">Cash</option>
+                                    <option value="qris">QRIS</option>
+                                </select>
                                 <button id="transaction-submit" type="submit" class="w-full rounded-xl bg-[#e06328] px-4 py-3 font-bold text-white shadow-[3px_3px_0_#a6411f] transition hover:-translate-y-0.5 hover:bg-[#c9521c] disabled:cursor-wait disabled:opacity-60">Proses & Simpan Transaksi</button>
                             </form>
                             <p class="mt-3 text-center text-xs font-semibold text-[#745f4e]">Harga dan status menu akan diperiksa ulang sebelum disimpan.</p>

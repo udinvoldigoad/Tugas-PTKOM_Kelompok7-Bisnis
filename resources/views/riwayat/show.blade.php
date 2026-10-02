@@ -33,8 +33,8 @@
                                 @foreach ($transaksi->detailTransaksi as $detail)
                                     <article class="flex items-center justify-between gap-4 rounded-xl border border-[#E8E2DA] p-3">
                                         <div class="min-w-0">
-                                            <strong class="block truncate text-[11px]">{{ $detail->menu?->nama_menu ?? 'Menu terhapus' }}</strong>
-                                            <span class="text-[9px] text-[#777067]">{{ $detail->jumlah }} × Rp {{ number_format($detail->jumlah > 0 ? intdiv((int) $detail->subtotal, (int) $detail->jumlah) : 0, 0, ',', '.') }}</span>
+                                            <strong class="block truncate text-[11px]">{{ $detail->nama_menu ?? $detail->menu?->nama_menu ?? 'Menu terhapus' }}</strong>
+                                            <span class="text-[9px] text-[#777067]">{{ $detail->jumlah }} × Rp {{ number_format($detail->harga_satuan ?? ($detail->jumlah > 0 ? intdiv((int) $detail->subtotal, (int) $detail->jumlah) : 0), 0, ',', '.') }}</span>
                                         </div>
                                         <strong class="shrink-0 text-[11px]">Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</strong>
                                     </article>

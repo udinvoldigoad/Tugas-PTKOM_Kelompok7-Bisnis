@@ -6,6 +6,7 @@ use App\Models\Menu;
 use App\Models\Transaksi;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class CompleteApplicationFlowTest extends TestCase
@@ -61,6 +62,7 @@ class CompleteApplicationFlowTest extends TestCase
 
         $checkoutResponse = $this->postJson(route('transactions.store'), [
             'metode_pembayaran' => 'qris',
+            'idempotency_key' => Str::uuid()->toString(),
         ])->assertCreated()
             ->assertJsonPath('message', 'Transaksi berhasil disimpan.')
             ->assertSessionMissing('cart');
@@ -71,7 +73,9 @@ class CompleteApplicationFlowTest extends TestCase
         $this->assertDatabaseHas('detail_transaksis', [
             'transaksi_id' => $transaction->id,
             'menu_id' => $menu->id,
+            'nama_menu' => 'Kopi Integrasi',
             'jumlah' => 2,
+            'harga_satuan' => 25000,
             'subtotal' => 50000,
         ]);
 

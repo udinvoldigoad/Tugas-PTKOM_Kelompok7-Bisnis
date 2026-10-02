@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Transaksi;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -95,5 +96,28 @@ class ProfileTest extends TestCase
             ->assertRedirect('/profile');
 
         $this->assertNotNull($user->fresh());
+    }
+
+    public function test_user_with_transaction_history_cannot_delete_their_account(): void
+    {
+        $user = User::factory()->create();
+        $transaction = Transaksi::create([
+            'user_id' => $user->id,
+            'tanggal' => now(),
+            'total_harga' => 24200,
+            'metode_pembayaran' => 'cash',
+        ]);
+
+        $this->actingAs($user)
+            ->from('/profile')
+            ->delete('/profile', [
+                'password' => 'password',
+            ])
+            ->assertSessionHasErrorsIn('userDeletion', 'password')
+            ->assertRedirect('/profile');
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertDatabaseHas('users', ['id' => $user->id]);
+        $this->assertDatabaseHas('transaksis', ['id' => $transaction->id]);
     }
 }
