@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Transaksi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
@@ -18,6 +20,7 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            'totalPenjualanHariIni' => Transaksi::totalPenjualanHariIni(userId: $request->user()->id),
         ]);
     }
 
@@ -26,15 +29,44 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
+        $validated = $request->validated();
+        $previousAvatar = $user->avatar;
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = $path;
         }
 
-        $request->user()->save();
+        if (! empty($validated['full_name']) && empty($validated['name'])) {
+            $parts = explode(' ', trim($validated['full_name']));
+            $validated['name'] = $parts[0] ?? $validated['full_name'];
+        }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        $user->fill($validated);
+        $user->save();
+
+        if (isset($validated['avatar']) && $previousAvatar && $previousAvatar !== $validated['avatar']) {
+            Storage::disk('public')->delete($previousAvatar);
+        }
+
+        return redirect()->back(fallback: route('profile.edit'))->with('status', 'profile-updated');
+    }
+
+    /**
+     * Remove the user's avatar.
+     */
+    public function destroyAvatar(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        if ($user->avatar) {
+            Storage::disk('public')->delete($user->avatar);
+            $user->avatar = null;
+            $user->save();
+        }
+
+        return redirect()->route('profile.edit')->with('status', 'profile-updated');
     }
 
     /**
@@ -47,6 +79,12 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        if ($user->transaksis()->exists()) {
+            return redirect()->back()->withErrors([
+                'password' => 'Akun yang memiliki riwayat transaksi tidak dapat dihapus.',
+            ], 'userDeletion');
+        }
 
         Auth::logout();
 
