@@ -108,6 +108,21 @@ class MenuManagementTest extends TestCase
         $this->assertDatabaseCount('menus', 0);
     }
 
+    public function test_menu_price_must_fit_transaction_total_after_tax(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->postJson(route('menu.store'), [
+            'nama_menu' => 'Kopi Terlalu Mahal',
+            'kategori' => 'Kopi',
+            'harga' => 9090909091,
+            'status_ketersediaan' => 'tersedia',
+        ])->assertUnprocessable()
+            ->assertJsonValidationErrors('harga');
+
+        $this->assertDatabaseCount('menus', 0);
+    }
+
     public function test_authenticated_user_can_update_status_and_replace_photo(): void
     {
         Storage::fake('public');

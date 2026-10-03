@@ -18,6 +18,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class TransaksiController extends Controller
 {
+    private const MAX_TOTAL_HARGA = 9_999_999_999;
+
     /**
      * Display a listing of the resource.
      */
@@ -169,11 +171,19 @@ class TransaksiController extends Controller
                     ];
                 }
 
+                $totalHarga = $subtotal + (int) round($subtotal * 0.1);
+
+                if ($totalHarga > self::MAX_TOTAL_HARGA) {
+                    throw ValidationException::withMessages([
+                        'cart' => 'Total transaksi melebihi batas yang dapat disimpan.',
+                    ]);
+                }
+
                 $transaction = Transaksi::create([
                     'user_id' => $request->user()->id,
                     'idempotency_key' => $validated['idempotency_key'],
                     'tanggal' => now(),
-                    'total_harga' => $subtotal + (int) round($subtotal * 0.1),
+                    'total_harga' => $totalHarga,
                     'metode_pembayaran' => $validated['metode_pembayaran'],
                 ]);
                 $transaction->detailTransaksi()->createMany($details);

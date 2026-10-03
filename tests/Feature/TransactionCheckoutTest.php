@@ -171,6 +171,24 @@ class TransactionCheckoutTest extends TestCase
         $this->assertDatabaseCount('transaksis', 0);
     }
 
+    public function test_transaction_rejects_a_total_that_exceeds_database_capacity(): void
+    {
+        $user = User::factory()->create();
+        $menu = $this->createMenu(['harga' => 9090909090]);
+
+        $this->actingAs($user)
+            ->withSession(['cart' => [$menu->id => ['jumlah' => 2]]])
+            ->postJson(route('transactions.store'), [
+                'metode_pembayaran' => 'cash',
+                'idempotency_key' => Str::uuid()->toString(),
+            ])
+            ->assertUnprocessable()
+            ->assertJsonValidationErrors('cart');
+
+        $this->assertDatabaseCount('transaksis', 0);
+        $this->assertDatabaseCount('detail_transaksis', 0);
+    }
+
     public function test_transaction_requires_an_idempotency_key(): void
     {
         $user = User::factory()->create();
