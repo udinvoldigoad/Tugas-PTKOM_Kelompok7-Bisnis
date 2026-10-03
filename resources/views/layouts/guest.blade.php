@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <x-favicon />
 
         <title>{{ config('app.name', 'Coffe Ridho') }} - Login</title>
         <meta name="description" content="Login ke Coffe Ridho - Sistem manajemen kedai kopi terbaik.">
