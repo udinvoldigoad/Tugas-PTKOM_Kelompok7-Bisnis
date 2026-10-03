@@ -32,7 +32,7 @@ return new class extends Migration
                         ->update([
                             'nama_menu' => $menus->get($detail->menu_id)?->nama_menu,
                             'harga_satuan' => $detail->jumlah > 0
-                                ? (int) $detail->subtotal / (int) $detail->jumlah
+                                ? round((float) $detail->subtotal / (int) $detail->jumlah, 2)
                                 : null,
                         ]);
                 }
