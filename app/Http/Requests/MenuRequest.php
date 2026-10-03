@@ -23,7 +23,7 @@ class MenuRequest extends FormRequest
         return [
             'nama_menu' => ['required', 'string', 'max:100'],
             'kategori' => ['required', Rule::in(['Kopi', 'Non-Kopi', 'Makanan', 'Dessert'])],
-            'harga' => ['required', 'numeric', 'min:1', 'max:9999999999.99'],
+            'harga' => ['required', 'integer', 'min:1', 'max:9999999999'],
             'status_ketersediaan' => ['required', Rule::in(['tersedia', 'habis'])],
             'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:2048'],
             'hapus_foto' => ['sometimes', 'boolean'],
@@ -40,7 +40,7 @@ class MenuRequest extends FormRequest
             'kategori.required' => 'Kategori menu wajib dipilih.',
             'kategori.in' => 'Kategori menu tidak valid.',
             'harga.required' => 'Harga menu wajib diisi.',
-            'harga.numeric' => 'Harga menu harus berupa angka.',
+            'harga.integer' => 'Harga menu harus berupa Rupiah utuh tanpa pecahan.',
             'harga.min' => 'Harga menu minimal Rp 1.',
             'status_ketersediaan.required' => 'Status ketersediaan wajib dipilih.',
             'status_ketersediaan.in' => 'Status ketersediaan tidak valid.',
