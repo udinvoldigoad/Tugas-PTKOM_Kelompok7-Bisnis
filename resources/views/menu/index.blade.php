@@ -972,7 +972,7 @@
         html += `
           <div class="py-2 flex items-start justify-between gap-2">
             <div class="min-w-0 flex-1">
-              <h4 class="font-bold text-sm text-[#1A1208] font-heading leading-tight">${item.name}</h4>
+              <h4 class="font-bold text-sm text-[#1A1208] font-heading leading-tight">${escapeHtml(item.name)}</h4>
               ${noteEditorItemId === item.id ? `
                 <div class="mt-1.5 flex items-center gap-1.5">
                   <input
