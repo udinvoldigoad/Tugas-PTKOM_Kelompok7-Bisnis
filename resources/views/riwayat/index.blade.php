@@ -325,7 +325,7 @@
                             </div>
                             <aside class="min-h-[342px] border-[6px] border-[#E5E2DD] bg-[#FFFCF7] p-4 text-[8.5px] shadow-sm">
                                 <div class="mb-3 border-b border-dashed border-[#2C2721] pb-3 text-center">
-                                    <img src="{{ asset('depan/logo.png') }}" class="mx-auto h-11 object-contain" alt="Coffe Ridho">
+                                    <img src="{{ asset('depan/logo.png') }}" class="mx-auto h-11 object-contain" alt="Coffee Ridho">
                                     <p class="mt-1 text-[7px] leading-tight text-[#6F675F]">Jl. way huwi No. 12, Lampung</p>
                                     <p class="text-[7px] leading-tight text-[#6F675F]">No Telp. 0894 0841 4151</p>
                                 </div>

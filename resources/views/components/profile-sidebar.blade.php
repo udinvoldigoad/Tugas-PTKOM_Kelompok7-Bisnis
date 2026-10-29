@@ -3,7 +3,7 @@
 <aside x-data="appSidebar" class="profile-sidebar" aria-label="Navigasi utama">
     <a class="profile-brand" href="{{ route('dashboard') }}" aria-label="Kafe Ridho">
         <img src="{{ asset('depan/logo.png') }}" alt="" width="44" height="44">
-        <span class="sidebar-label">COFFE<br>RIDHO</span>
+        <span class="sidebar-label">COFFEE<br>RIDHO</span>
     </a>
     <button type="button" class="sidebar-toggle" @click="toggleSidebar()"
         :aria-expanded="sidebarExpanded.toString()" aria-controls="profile-navigation"
