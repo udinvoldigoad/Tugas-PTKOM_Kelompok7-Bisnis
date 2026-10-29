@@ -62,6 +62,40 @@ class MenuPhotoSeederTest extends TestCase
         $this->assertSame($afterFirstRun, Storage::disk('public')->files('menus'));
     }
 
+    public function test_photo_uploaded_by_staff_is_never_replaced_by_a_placeholder(): void
+    {
+        Storage::fake('public');
+        Storage::disk('public')->put('menus/foto-asli.webp', 'binary');
+        $menu = Menu::create([
+            'nama_menu' => 'Matcha Latte',
+            'kategori' => 'Non-Kopi',
+            'harga' => 26000,
+            'foto' => 'menus/foto-asli.webp',
+            'status_ketersediaan' => 'tersedia',
+        ]);
+
+        $this->seed(MenuPhotoSeeder::class);
+
+        $this->assertSame('menus/foto-asli.webp', $menu->refresh()->foto);
+        Storage::disk('public')->assertExists('menus/foto-asli.webp');
+    }
+
+    public function test_placeholder_file_is_not_copied_when_no_menu_needs_it(): void
+    {
+        Storage::fake('public');
+        Menu::create([
+            'nama_menu' => 'Matcha Latte',
+            'kategori' => 'Non-Kopi',
+            'harga' => 26000,
+            'foto' => 'menus/foto-asli.webp',
+            'status_ketersediaan' => 'tersedia',
+        ]);
+
+        $this->seed(MenuPhotoSeeder::class);
+
+        $this->assertSame([], Storage::disk('public')->files('menus'));
+    }
+
     public function test_every_seeded_menu_gets_a_photo_that_is_really_bundled(): void
     {
         Storage::fake('public');
