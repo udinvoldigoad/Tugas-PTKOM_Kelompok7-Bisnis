@@ -31,14 +31,24 @@ class MenuPhotoSeeder extends Seeder
     ];
 
     /**
-     * Copy each bundled photo onto the public disk and point its menus at it.
+     * Give menus that have no photo yet one of the bundled placeholders.
      *
-     * Menus are matched by name because ids differ between environments, and the
-     * stored filename is reused so repeated runs overwrite instead of piling up.
+     * Menus are matched by name because ids differ between environments. A menu
+     * that already has a photo is left alone: on a live site that photo was
+     * uploaded by staff and must not be replaced by dummy data. The stored
+     * filename is reused so repeated runs never pile up duplicate files.
      */
     public function run(): void
     {
         foreach (self::PHOTOS as $menuName => $filename) {
+            $menusWithoutPhoto = Menu::withTrashed()
+                ->where('nama_menu', $menuName)
+                ->whereNull('foto');
+
+            if ($menusWithoutPhoto->doesntExist()) {
+                continue;
+            }
+
             $sourcePath = database_path('seeders/menu-photos/'.$filename);
 
             if (! is_file($sourcePath)) {
@@ -53,9 +63,7 @@ class MenuPhotoSeeder extends Seeder
                 Storage::disk('public')->put($storedPath, (string) file_get_contents($sourcePath));
             }
 
-            Menu::withTrashed()
-                ->where('nama_menu', $menuName)
-                ->update(['foto' => $storedPath]);
+            $menusWithoutPhoto->update(['foto' => $storedPath]);
         }
     }
 }
