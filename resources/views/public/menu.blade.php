@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <x-favicon />
-    <title>Menu - Coffe Ridho</title>
-    <meta name="description" content="Nikmati pilihan kopi, minuman, dan makanan dari Coffe Ridho.">
+    <title>Menu - Coffee Ridho</title>
+    <meta name="description" content="Nikmati pilihan kopi, minuman, dan makanan dari Coffee Ridho.">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,7 +54,7 @@
     <div id="menu-intro" class="menu-intro" aria-hidden="true">
         <div class="menu-intro__content">
             <img src="{{ asset('depan/logo.png') }}" alt="" class="menu-intro__logo">
-            <p class="menu-intro__name">COFFE<br>RIDHO</p>
+            <p class="menu-intro__name">COFFEE<br>RIDHO</p>
             <span class="menu-intro__line"></span>
         </div>
     </div>
@@ -72,9 +72,9 @@
 
     <header class="sticky top-0 z-50 border-b border-black/10 bg-[#f7f0e8]/95 backdrop-blur">
         <nav class="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8 lg:h-24">
-            <a href="{{ url('/') }}" class="flex items-center gap-3 text-black" aria-label="Coffe Ridho">
+            <a href="{{ url('/') }}" class="flex items-center gap-3 text-black" aria-label="Coffee Ridho">
                 <img src="{{ asset('depan/logo.png') }}" alt="" class="h-11 w-11 object-contain lg:h-14 lg:w-14">
-                <span class="display text-xl font-semibold italic leading-[.9] lg:text-2xl">COFFE<br>RIDHO</span>
+                <span class="display text-xl font-semibold italic leading-[.9] lg:text-2xl">COFFEE<br>RIDHO</span>
             </a>
 
             <div class="hidden items-center gap-8 text-sm font-bold md:flex">
@@ -94,7 +94,7 @@
 
     <main>
         <section class="hero-shell relative isolate min-h-[520px] overflow-hidden sm:min-h-[610px] lg:min-h-[620px]">
-            <img src="{{ asset('menu-web/image0_233_1585.png') }}" alt="Es kopi susu Coffe Ridho" class="absolute inset-0 h-full w-full object-cover object-center">
+            <img src="{{ asset('menu-web/image0_233_1585.png') }}" alt="Es kopi susu Coffee Ridho" class="absolute inset-0 h-full w-full object-cover object-center">
             <div class="hero-shade absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-black/50"></div>
             <div class="hero-content relative mx-auto flex min-h-[520px] max-w-7xl items-end justify-between gap-4 px-5 pb-16 text-white sm:min-h-[610px] sm:px-8 sm:pb-20 lg:min-h-[620px] lg:px-14">
                 <div class="hero-copy">
@@ -141,8 +141,8 @@
             </section>
 
             @foreach ([
-                ['id' => 'kopi', 'title' => 'MENU', 'suffix' => 'Coffe', 'menus' => $coffeeMenus, 'fallback' => 'image2_233_1585.png'],
-                ['id' => 'non-kopi', 'title' => 'MENU', 'suffix' => 'Non Coffe', 'menus' => $otherMenus, 'fallback' => 'image1_233_1585.png'],
+                ['id' => 'kopi', 'title' => 'MENU', 'suffix' => 'Coffee', 'menus' => $coffeeMenus, 'fallback' => 'image2_233_1585.png'],
+                ['id' => 'non-kopi', 'title' => 'MENU', 'suffix' => 'Non Coffee', 'menus' => $otherMenus, 'fallback' => 'image1_233_1585.png'],
             ] as $section)
                 @if ($section['menus']->isNotEmpty())
                     <section id="{{ $section['id'] }}" class="scroll-mt-24 px-5 py-14 sm:px-8 sm:py-20">
@@ -197,7 +197,7 @@
     </main>
 
     <footer class="mt-10 border-t-2 border-black/10 bg-[#f7f0e8] px-5 py-8 text-center text-sm font-bold">
-        <p>Coffe Ridho · Kopi hangat untuk setiap cerita.</p>
+        <p>Coffee Ridho · Kopi hangat untuk setiap cerita.</p>
     </footer>
     <script>
         (() => {
@@ -205,7 +205,7 @@
             let hasSeenIntro = false;
 
             try {
-                hasSeenIntro = sessionStorage.getItem('coffe-ridho-menu-intro') === 'seen';
+                hasSeenIntro = sessionStorage.getItem('coffee-ridho-menu-intro') === 'seen';
             } catch (error) {
                 hasSeenIntro = false;
             }
@@ -216,7 +216,7 @@
             }
 
             try {
-                sessionStorage.setItem('coffe-ridho-menu-intro', 'seen');
+                sessionStorage.setItem('coffee-ridho-menu-intro', 'seen');
             } catch (error) {
                 // Animasi tetap berjalan jika penyimpanan browser tidak tersedia.
             }

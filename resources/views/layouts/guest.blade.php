@@ -6,8 +6,8 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <x-favicon />
 
-        <title>{{ config('app.name', 'Coffe Ridho') }} - Login</title>
-        <meta name="description" content="Login ke Coffe Ridho - Sistem manajemen kedai kopi terbaik.">
+        <title>{{ config('app.name', 'Coffee Ridho') }} - Login</title>
+        <meta name="description" content="Login ke Coffee Ridho - Sistem manajemen kedai kopi terbaik.">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -302,13 +302,13 @@
             <div class="brand-header" id="brand-logo">
                 <img
                     src="{{ asset('depan/logo.png') }}"
-                    alt="Logo Coffe Ridho"
+                    alt="Logo Coffee Ridho"
                     class="brand-logo-img"
                     width="60"
                     height="60"
                 >
                 <div class="brand-name">
-                    COFFE<br>RIDHO
+                    COFFEE<br>RIDHO
                 </div>
             </div>
 

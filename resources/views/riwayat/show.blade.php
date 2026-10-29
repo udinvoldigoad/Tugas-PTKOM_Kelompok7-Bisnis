@@ -45,8 +45,8 @@
 
                     <aside class="h-fit rounded-2xl border border-dashed border-[#CFC5B8] bg-[#FFFCF7] p-5 shadow-sm">
                         <div class="flex items-center gap-3 border-b border-dashed border-[#CFC5B8] pb-4">
-                            <img src="{{ asset('depan/logo.png') }}" alt="Coffe Ridho" class="h-10 w-10 object-contain">
-                            <div><strong class="block text-xs">COFFE RIDHO</strong><span class="text-[9px] text-[#777067]">Ringkasan pembayaran</span></div>
+                            <img src="{{ asset('depan/logo.png') }}" alt="Coffee Ridho" class="h-10 w-10 object-contain">
+                            <div><strong class="block text-xs">COFFEE RIDHO</strong><span class="text-[9px] text-[#777067]">Ringkasan pembayaran</span></div>
                         </div>
                         <div class="mt-4 space-y-2 text-[10px]">
                             <p class="flex justify-between gap-3"><span>Subtotal</span><span>Rp {{ number_format($subtotal, 0, ',', '.') }}</span></p>

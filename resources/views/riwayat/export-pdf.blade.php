@@ -24,7 +24,7 @@
 <body>
     <div class="actions"><button type="button" onclick="window.print()">Simpan / Cetak PDF</button></div>
     <header>
-        <div><h1>Riwayat Transaksi</h1><p>Coffe Ridho</p></div>
+        <div><h1>Riwayat Transaksi</h1><p>Coffee Ridho</p></div>
         <p>Dicetak {{ now()->translatedFormat('d F Y, H:i') }}</p>
     </header>
 

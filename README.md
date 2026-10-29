@@ -1,4 +1,4 @@
-# Kasir Kafe - Coffe Ridho
+# Kasir Kafe - Coffee Ridho
 
 Aplikasi kasir berbasis Laravel untuk mengelola menu, keranjang, transaksi, dan profil pengguna Kafe Ridho. Halaman menu publik dapat dibuka tanpa login, sedangkan operasi kasir dan pengelolaan menu memerlukan akun internal.
 
@@ -36,7 +36,7 @@ npm install
 Untuk MySQL Laragon, buat database `kasir_kafe`, lalu sesuaikan bagian berikut pada `.env`:
 
 ```env
-APP_NAME="Coffe Ridho"
+APP_NAME="Coffee Ridho"
 APP_URL=http://127.0.0.1:8000
 
 DB_CONNECTION=mysql
